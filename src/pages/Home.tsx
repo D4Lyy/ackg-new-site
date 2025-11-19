@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getActivities } from "@/lib/activities";
 
 const Home = () => {
-  const activities = getActivities().slice(0, 6);
+  const activities = getActivities().slice(0, 3);
 
   return (
     <div className="min-h-screen">
@@ -93,6 +93,27 @@ const Home = () => {
             <Button size="lg" variant="default" className="font-semibold">
               Faire un don
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Princess Visit Section */}
+      <section className="bg-muted/30 py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg overflow-hidden relative">
+              <div className="absolute inset-0 bg-black/20"></div>
+              {/* Placeholder pour photo de la visite */}
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold mb-4">Visite à la princesse kurde</h2>
+              <p className="text-muted-foreground mb-6">
+                Nous avons eu l'honneur de recevoir la visite de la princesse kurde lors de notre événement culturel annuel. Une rencontre mémorable qui témoigne de l'importance de notre patrimoine et de nos traditions.
+              </p>
+              <Button size="lg" className="font-semibold">
+                Découvrir l'événement
+              </Button>
+            </div>
           </div>
         </div>
       </section>

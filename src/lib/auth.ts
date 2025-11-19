@@ -74,3 +74,13 @@ export const changePassword = async (
     return false;
   }
 };
+
+export const updateCredentials = async (newUsername: string, newPassword: string): Promise<void> => {
+  const hashedUsername = await hashPassword(newUsername);
+  const hashedPassword = await hashPassword(newPassword);
+  
+  localStorage.setItem(
+    ADMIN_KEY,
+    JSON.stringify({ username: hashedUsername, password: hashedPassword })
+  );
+};

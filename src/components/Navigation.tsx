@@ -1,17 +1,25 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { language, setLanguage, t } = useLanguage();
 
   const links = [
-    { href: "/", label: "Accueil" },
-    { href: "/activites", label: "Activités" },
-    { href: "/cours-de-langues", label: "Cours de langues" },
-    { href: "/a-propos", label: "À propos" },
+    { href: "/", label: t("nav.home") },
+    { href: "/activites", label: t("nav.activities") },
+    { href: "/cours-de-langues", label: t("nav.courses") },
+    { href: "/a-propos", label: t("nav.about") },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -45,6 +53,23 @@ const Navigation = () => {
                 </Button>
               </Link>
             ))}
+            
+            {/* Language Selector */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Globe className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-background">
+                <DropdownMenuItem onClick={() => setLanguage("fr")}>
+                  🇫🇷 Français
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setLanguage("ku")}>
+                  🟥🟨🟩 کوردی
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Mobile Menu Button */}
@@ -72,6 +97,24 @@ const Navigation = () => {
                   </Button>
                 </Link>
               ))}
+              
+              {/* Mobile Language Selector */}
+              <div className="flex gap-2 pt-2 border-t border-border mt-2">
+                <Button
+                  variant={language === "fr" ? "default" : "ghost"}
+                  onClick={() => setLanguage("fr")}
+                  className="flex-1"
+                >
+                  🇫🇷 FR
+                </Button>
+                <Button
+                  variant={language === "ku" ? "default" : "ghost"}
+                  onClick={() => setLanguage("ku")}
+                  className="flex-1"
+                >
+                  🟥🟨🟩 KU
+                </Button>
+              </div>
             </div>
           </div>
         )}
