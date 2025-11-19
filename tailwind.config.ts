@@ -47,6 +47,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        kurdish: {
+          red: "hsl(var(--kurdish-red))",
+          green: "hsl(var(--kurdish-green))",
+          yellow: "hsl(var(--kurdish-yellow))",
+        },
+        overlay: "hsl(var(--overlay))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
