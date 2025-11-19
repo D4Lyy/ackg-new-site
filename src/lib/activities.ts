@@ -22,7 +22,16 @@ export const getActivities = (): Activity[] => {
 
 export const getActivityBySlug = (slug: string): Activity | null => {
   const activities = getActivities();
-  return activities.find((a) => a.id === slug) || null;
+  // Format the title of each activity to match the slug format
+  return activities.find((a) => {
+    const activitySlug = a.title
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    return activitySlug === slug;
+  }) || null;
 };
 
 export const saveActivity = (activity: Omit<Activity, "id">): Activity => {

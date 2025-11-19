@@ -9,15 +9,20 @@ interface ActivityCardProps {
   image?: string;
 }
 
-const ActivityCard = ({ title, date, location, image }: ActivityCardProps) => {
+interface ActivityCardPropsExtended extends ActivityCardProps {
+  images?: string[];
+}
+
+const ActivityCard = ({ title, date, location, image, images }: ActivityCardPropsExtended) => {
   const slug = formatUrlSlug(title);
+  const displayImage = images && images.length > 0 ? images[0] : image;
 
   return (
     <Link to={`/activite/${slug}`}>
       <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
         <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 relative overflow-hidden">
-          {image && (
-            <img src={image} alt={title} className="w-full h-full object-cover" />
+          {displayImage && (
+            <img src={displayImage} alt={title} className="w-full h-full object-cover" />
           )}
         </div>
         <CardContent className="p-4">
