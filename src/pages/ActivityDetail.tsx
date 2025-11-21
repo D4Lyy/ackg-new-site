@@ -19,14 +19,17 @@ const ActivityDetail = () => {
   const [activity, setActivity] = useState<Activity | null>(null);
 
   useEffect(() => {
-    if (slug) {
-      const foundActivity = getActivityBySlug(slug);
-      if (foundActivity) {
-        setActivity(foundActivity);
-      } else {
-        navigate("/activites");
+    const loadActivity = async () => {
+      if (slug) {
+        const foundActivity = await getActivityBySlug(slug);
+        if (foundActivity) {
+          setActivity(foundActivity);
+        } else {
+          navigate("/activites");
+        }
       }
-    }
+    };
+    loadActivity();
   }, [slug, navigate]);
 
   const handleShare = async () => {

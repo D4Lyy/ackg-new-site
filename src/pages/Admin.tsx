@@ -1,32 +1,45 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { PlusCircle, Trash2, LogOut, Edit, Settings, Upload } from "lucide-react";
+import { PlusCircle, Trash2, LogOut, Edit, Settings, Upload, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { login, logout, isAuthenticated, initializeAdmin, updateCredentials } from "@/lib/auth";
-import {
-  getActivities,
-  saveActivity,
-  deleteActivity,
-  updateActivity,
-  type Activity,
-} from "@/lib/activities";
+import { supabase } from "@/integrations/supabase/client";
+import type { User, Session } from "@supabase/supabase-js";
+
+interface Activity {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  content: string;
+  image?: string;
+  images?: string[];
+}
+
+interface Profile {
+  id: string;
+  username: string;
+  created_at: string;
+}
 
 const Admin = () => {
   const navigate = useNavigate();
-  const [authenticated, setAuthenticated] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [showSettings, setShowSettings] = useState(false);
-  const [newUsername, setNewUsername] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
   
+  // Login form
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  
+  // Activities
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
   const [newActivity, setNewActivity] = useState({
     title: "",
     date: "",
@@ -34,48 +47,121 @@ const Admin = () => {
     content: "",
     images: [] as string[],
   });
+  
+  // User management
+  const [showUserManagement, setShowUserManagement] = useState(false);
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [newUserPassword, setNewUserPassword] = useState("");
+  const [newUserUsername, setNewUserUsername] = useState("");
+  const [users, setUsers] = useState<Profile[]>([]);
 
   useEffect(() => {
-    initializeAdmin();
-    if (isAuthenticated()) {
-      setAuthenticated(true);
-      loadActivities();
-    }
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          setTimeout(() => {
+            checkAdminRole(session.user.id);
+            loadActivities();
+          }, 0);
+        } else {
+          setIsAdmin(false);
+          setLoading(false);
+        }
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        checkAdminRole(session.user.id);
+        loadActivities();
+      } else {
+        setLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const loadActivities = () => {
-    setActivities(getActivities());
+  const checkAdminRole = async (userId: string) => {
+    try {
+      const { data, error } = await supabase.rpc('has_role', {
+        _user_id: userId,
+        _role: 'admin'
+      });
+
+      if (error) {
+        console.error('Error checking admin role:', error);
+        setIsAdmin(false);
+      } else {
+        setIsAdmin(data === true);
+      }
+    } catch (error) {
+      console.error('Error checking admin role:', error);
+      setIsAdmin(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadActivities = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('activities')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setActivities(data || []);
+    } catch (error) {
+      console.error('Error loading activities:', error);
+      toast.error("Erreur lors du chargement des activités");
+    }
+  };
+
+  const loadUsers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setUsers(data || []);
+    } catch (error) {
+      console.error('Error loading users:', error);
+      toast.error("Erreur lors du chargement des utilisateurs");
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await login(username, password);
-    if (success) {
-      setAuthenticated(true);
-      loadActivities();
+    
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+      
       toast.success("Connexion réussie!");
-    } else {
-      toast.error("Identifiants incorrects");
+    } catch (error: any) {
+      toast.error(error.message || "Identifiants incorrects");
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    setAuthenticated(false);
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setIsAdmin(false);
     navigate("/");
-  };
-
-  const handleUpdateCredentials = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newUsername || !newPassword) {
-      toast.error("Veuillez remplir tous les champs");
-      return;
-    }
-    updateCredentials(newUsername, newPassword);
-    setNewUsername("");
-    setNewPassword("");
-    setShowSettings(false);
-    toast.success("Identifiants mis à jour avec succès!");
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,7 +203,7 @@ const Admin = () => {
     }
   };
 
-  const handleAddActivity = (e: React.FormEvent) => {
+  const handleAddActivity = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!newActivity.title || !newActivity.date || !newActivity.location || !newActivity.content) {
@@ -125,13 +211,28 @@ const Admin = () => {
       return;
     }
 
-    saveActivity(newActivity);
-    setNewActivity({ title: "", date: "", location: "", content: "", images: [] });
-    loadActivities();
-    toast.success("Activité ajoutée avec succès!");
+    try {
+      const { error } = await supabase
+        .from('activities')
+        .insert([{
+          title: newActivity.title,
+          date: newActivity.date,
+          location: newActivity.location,
+          content: newActivity.content,
+          images: newActivity.images.length > 0 ? newActivity.images : null,
+        }]);
+
+      if (error) throw error;
+
+      setNewActivity({ title: "", date: "", location: "", content: "", images: [] });
+      loadActivities();
+      toast.success("Activité ajoutée avec succès!");
+    } catch (error: any) {
+      toast.error(error.message || "Erreur lors de l'ajout de l'activité");
+    }
   };
 
-  const handleUpdateActivity = (e: React.FormEvent) => {
+  const handleUpdateActivity = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!editingActivity) return;
@@ -141,17 +242,88 @@ const Admin = () => {
       return;
     }
 
-    updateActivity(editingActivity.id, editingActivity);
-    setEditingActivity(null);
-    loadActivities();
-    toast.success("Activité mise à jour avec succès!");
+    try {
+      const { error } = await supabase
+        .from('activities')
+        .update({
+          title: editingActivity.title,
+          date: editingActivity.date,
+          location: editingActivity.location,
+          content: editingActivity.content,
+          images: editingActivity.images,
+        })
+        .eq('id', editingActivity.id);
+
+      if (error) throw error;
+
+      setEditingActivity(null);
+      loadActivities();
+      toast.success("Activité mise à jour avec succès!");
+    } catch (error: any) {
+      toast.error(error.message || "Erreur lors de la mise à jour de l'activité");
+    }
   };
 
-  const handleDeleteActivity = (id: string) => {
-    if (confirm("Êtes-vous sûr de vouloir supprimer cette activité ?")) {
-      deleteActivity(id);
+  const handleDeleteActivity = async (id: string) => {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cette activité ?")) return;
+
+    try {
+      const { error } = await supabase
+        .from('activities')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
       loadActivities();
       toast.success("Activité supprimée");
+    } catch (error: any) {
+      toast.error(error.message || "Erreur lors de la suppression de l'activité");
+    }
+  };
+
+  const handleAddUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newUserEmail || !newUserPassword || !newUserUsername) {
+      toast.error("Veuillez remplir tous les champs");
+      return;
+    }
+
+    try {
+      // Create user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: newUserEmail,
+        password: newUserPassword,
+        options: {
+          data: {
+            username: newUserUsername,
+          },
+          emailRedirectTo: `${window.location.origin}/`,
+        },
+      });
+
+      if (authError) throw authError;
+
+      if (authData.user) {
+        // Assign admin role
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert([{
+            user_id: authData.user.id,
+            role: 'admin',
+          }]);
+
+        if (roleError) throw roleError;
+      }
+
+      setNewUserEmail("");
+      setNewUserPassword("");
+      setNewUserUsername("");
+      loadUsers();
+      toast.success("Utilisateur admin ajouté avec succès!");
+    } catch (error: any) {
+      toast.error(error.message || "Erreur lors de l'ajout de l'utilisateur");
     }
   };
 
@@ -163,7 +335,15 @@ const Admin = () => {
     setEditingActivity(null);
   };
 
-  if (!authenticated) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30 pt-20">
+        <p>Chargement...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/30 pt-20">
         <Card className="w-full max-w-md">
@@ -173,12 +353,12 @@ const Admin = () => {
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <Label htmlFor="username">Nom d'utilisateur</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -202,15 +382,38 @@ const Admin = () => {
     );
   }
 
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30 pt-20">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Accès refusé</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">
+              Vous n'avez pas les permissions pour accéder à cette page.
+            </p>
+            <Button onClick={() => navigate("/")} className="w-full">
+              Retour à l'accueil
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen pt-20 bg-muted/30">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Administration</h1>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setShowSettings(!showSettings)}>
-              <Settings className="w-4 h-4 mr-2" />
-              Paramètres
+            <Button variant="outline" onClick={() => {
+              setShowUserManagement(!showUserManagement);
+              if (!showUserManagement) loadUsers();
+            }}>
+              <UserPlus className="w-4 h-4 mr-2" />
+              Utilisateurs
             </Button>
             <Button variant="outline" onClick={handleLogout}>
               <LogOut className="w-4 h-4 mr-2" />
@@ -219,40 +422,77 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Settings Section */}
-        {showSettings && (
+        {/* User Management Section */}
+        {showUserManagement && (
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle>Paramètres du compte</CardTitle>
+              <CardTitle>Gestion des utilisateurs</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleUpdateCredentials} className="space-y-4">
+              <form onSubmit={handleAddUser} className="space-y-4 mb-6">
                 <div>
-                  <Label htmlFor="newUsername">Nouveau nom d'utilisateur</Label>
+                  <Label htmlFor="newUserEmail">Email</Label>
                   <Input
-                    id="newUsername"
-                    type="text"
-                    value={newUsername}
-                    onChange={(e) => setNewUsername(e.target.value)}
-                    placeholder="Nouveau nom d'utilisateur"
+                    id="newUserEmail"
+                    type="email"
+                    value={newUserEmail}
+                    onChange={(e) => setNewUserEmail(e.target.value)}
+                    placeholder="email@example.com"
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="newPassword">Nouveau mot de passe</Label>
+                  <Label htmlFor="newUserUsername">Nom d'utilisateur</Label>
                   <Input
-                    id="newPassword"
+                    id="newUserUsername"
+                    type="text"
+                    value={newUserUsername}
+                    onChange={(e) => setNewUserUsername(e.target.value)}
+                    placeholder="Nom d'utilisateur"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="newUserPassword">Mot de passe</Label>
+                  <Input
+                    id="newUserPassword"
                     type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Nouveau mot de passe"
+                    value={newUserPassword}
+                    onChange={(e) => setNewUserPassword(e.target.value)}
+                    placeholder="Mot de passe (min. 6 caractères)"
                     required
                   />
                 </div>
                 <Button type="submit" className="w-full">
-                  Mettre à jour les identifiants
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Ajouter un administrateur
                 </Button>
               </form>
+
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-4">Utilisateurs existants</h3>
+                {users.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-4">
+                    Aucun utilisateur
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {users.map((profile) => (
+                      <div
+                        key={profile.id}
+                        className="flex justify-between items-center p-3 border rounded"
+                      >
+                        <div>
+                          <p className="font-medium">{profile.username}</p>
+                          <p className="text-sm text-muted-foreground">
+                            Créé le {new Date(profile.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         )}
