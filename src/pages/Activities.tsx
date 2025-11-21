@@ -1,14 +1,24 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Search } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import ActivityCard from "@/components/ActivityCard";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { getActivities } from "@/lib/activities";
+import { getActivities, type Activity } from "@/lib/activities";
 
 const Activities = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const activities = getActivities();
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadActivities = async () => {
+      const data = await getActivities();
+      setActivities(data);
+      setLoading(false);
+    };
+    loadActivities();
+  }, []);
 
   const filteredActivities = useMemo(() => {
     if (!searchQuery.trim()) return activities;
@@ -42,7 +52,13 @@ const Activities = () => {
         </div>
 
         {/* Activities Grid */}
-        {filteredActivities.length > 0 ? (
+        {loading ? (
+          <Card>
+            <CardContent className="p-12 text-center">
+              <p className="text-muted-foreground">Chargement des activités...</p>
+            </CardContent>
+          </Card>
+        ) : filteredActivities.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredActivities.map((activity) => (
               <ActivityCard key={activity.id} {...activity} />
