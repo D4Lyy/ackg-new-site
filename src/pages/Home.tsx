@@ -1,13 +1,24 @@
 import { Link } from "react-router-dom";
 import { GraduationCap, Heart, Users } from "lucide-react";
+import { useState, useEffect } from "react";
 import HeroSection from "@/components/HeroSection";
 import ActivityCard from "@/components/ActivityCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { getActivities } from "@/lib/activities";
+import { getActivities, type Activity } from "@/lib/activities";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Home = () => {
-  const activities = getActivities().slice(0, 3);
+  const { language } = useLanguage();
+  const [activities, setActivities] = useState<Activity[]>([]);
+  
+  useEffect(() => {
+    const loadActivities = async () => {
+      const data = await getActivities();
+      setActivities(data.slice(0, 3));
+    };
+    loadActivities();
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -70,7 +81,7 @@ const Home = () => {
               <p className="text-muted-foreground mb-6">
                 Les enseignants utilisés de notre communauté kurde à Genève ont à cœur de transmettre la richesse de notre langue et de notre culture. Cours adaptés aux enfants, à partir de 5 ans qui bénéficient d'un apprentissage adapté, ludique et stimulant. Cours pour adultes également disponibles.
               </p>
-              <Link to="/cours-de-langues">
+              <Link to={`/${language}/cours-de-langues`}>
                 <Button size="lg" className="font-semibold">
                   En savoir plus
                 </Button>
@@ -122,7 +133,7 @@ const Home = () => {
       <section className="container mx-auto px-4 py-16">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold">Nos Activités</h2>
-          <Link to="/activites">
+          <Link to={`/${language}/activites`}>
             <Button variant="outline">Voir toutes</Button>
           </Link>
         </div>

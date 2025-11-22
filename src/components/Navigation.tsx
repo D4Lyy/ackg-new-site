@@ -1,6 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Globe } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -13,23 +13,44 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
 
+  // Extract current language from URL
+  useEffect(() => {
+    const pathLang = location.pathname.split('/')[1];
+    if (pathLang === 'fr' || pathLang === 'ku') {
+      if (pathLang !== language) {
+        setLanguage(pathLang as 'fr' | 'ku');
+      }
+    }
+  }, [location.pathname]);
+
   const links = [
-    { href: "/", label: t("nav.home") },
-    { href: "/activites", label: t("nav.activities") },
-    { href: "/cours-de-langues", label: t("nav.courses") },
-    { href: "/a-propos", label: t("nav.about") },
+    { href: `/${language}/accueil`, label: t("nav.home") },
+    { href: `/${language}/activites`, label: t("nav.activities") },
+    { href: `/${language}/cours-de-langues`, label: t("nav.courses") },
+    { href: `/${language}/a-propos`, label: t("nav.about") },
   ];
 
   const isActive = (path: string) => location.pathname === path;
+  
+  const handleLanguageChange = (newLang: 'fr' | 'ku') => {
+    // Get current path without language prefix
+    const pathParts = location.pathname.split('/');
+    const currentPath = pathParts.slice(2).join('/') || 'accueil';
+    
+    // Navigate to new language path
+    navigate(`/${newLang}/${currentPath}`);
+    setLanguage(newLang);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3">
+          <Link to={`/${language}/accueil`} className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-kurdish-red via-kurdish-yellow to-kurdish-green p-1">
               <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
                 <span className="text-xl font-bold text-primary">AK</span>
@@ -62,10 +83,10 @@ const Navigation = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-background">
-                <DropdownMenuItem onClick={() => setLanguage("fr")}>
+                <DropdownMenuItem onClick={() => handleLanguageChange("fr")}>
                   🇫🇷 Français
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage("ku")}>
+                <DropdownMenuItem onClick={() => handleLanguageChange("ku")}>
                   🟥🟨🟩 کوردی
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -102,14 +123,20 @@ const Navigation = () => {
               <div className="flex gap-2 pt-2 border-t border-border mt-2">
                 <Button
                   variant={language === "fr" ? "default" : "ghost"}
-                  onClick={() => setLanguage("fr")}
+                  onClick={() => {
+                    handleLanguageChange("fr");
+                    setIsOpen(false);
+                  }}
                   className="flex-1"
                 >
                   🇫🇷 FR
                 </Button>
                 <Button
                   variant={language === "ku" ? "default" : "ghost"}
-                  onClick={() => setLanguage("ku")}
+                  onClick={() => {
+                    handleLanguageChange("ku");
+                    setIsOpen(false);
+                  }}
                   className="flex-1"
                 >
                   🟥🟨🟩 KU

@@ -54,6 +54,12 @@ const Admin = () => {
   const [newUserPassword, setNewUserPassword] = useState("");
   const [newUserUsername, setNewUserUsername] = useState("");
   const [users, setUsers] = useState<Profile[]>([]);
+  
+  // Password change
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPasswordChange, setNewPasswordChange] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     // Set up auth state listener
@@ -334,6 +340,53 @@ const Admin = () => {
   const cancelEditing = () => {
     setEditingActivity(null);
   };
+  
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (newPasswordChange !== confirmPassword) {
+      toast.error("Les mots de passe ne correspondent pas");
+      return;
+    }
+    
+    if (newPasswordChange.length < 6) {
+      toast.error("Le mot de passe doit contenir au moins 6 caractères");
+      return;
+    }
+    
+    try {
+      // Verify current password by attempting to sign in
+      if (!user?.email) {
+        toast.error("Impossible de récupérer l'email de l'utilisateur");
+        return;
+      }
+      
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword,
+      });
+      
+      if (signInError) {
+        toast.error("Mot de passe actuel incorrect");
+        return;
+      }
+      
+      // Update password
+      const { error } = await supabase.auth.updateUser({
+        password: newPasswordChange
+      });
+
+      if (error) throw error;
+
+      toast.success("Mot de passe modifié avec succès");
+      setCurrentPassword("");
+      setNewPasswordChange("");
+      setConfirmPassword("");
+      setShowPasswordChange(false);
+    } catch (error: any) {
+      toast.error(error.message || "Erreur lors du changement de mot de passe");
+    }
+  };
 
   if (loading) {
     return (
@@ -408,13 +461,19 @@ const Admin = () => {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Administration</h1>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => {
-              setShowUserManagement(!showUserManagement);
-              if (!showUserManagement) loadUsers();
-            }}>
-              <UserPlus className="w-4 h-4 mr-2" />
-              Utilisateurs
+            <Button variant="outline" onClick={() => setShowPasswordChange(!showPasswordChange)}>
+              <Settings className="w-4 h-4 mr-2" />
+              Mot de passe
             </Button>
+            {isAdmin && (
+              <Button variant="outline" onClick={() => {
+                setShowUserManagement(!showUserManagement);
+                if (!showUserManagement) loadUsers();
+              }}>
+                <UserPlus className="w-4 h-4 mr-2" />
+                Utilisateurs
+              </Button>
+            )}
             <Button variant="outline" onClick={handleLogout}>
               <LogOut className="w-4 h-4 mr-2" />
               Déconnexion
@@ -422,8 +481,54 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* User Management Section */}
-        {showUserManagement && (
+        {/* Password Change Section */}
+        {showPasswordChange && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Changer le mot de passe</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                <div>
+                  <Label htmlFor="currentPassword">Mot de passe actuel</Label>
+                  <Input
+                    id="currentPassword"
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="newPasswordChange">Nouveau mot de passe</Label>
+                  <Input
+                    id="newPasswordChange"
+                    type="password"
+                    value={newPasswordChange}
+                    onChange={(e) => setNewPasswordChange(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="confirmPassword">Confirmer le nouveau mot de passe</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full">
+                  Changer le mot de passe
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* User Management Section - Only for admins */}
+        {isAdmin && showUserManagement && (
           <Card className="mb-8">
             <CardHeader>
               <CardTitle>Gestion des utilisateurs</CardTitle>
