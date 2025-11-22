@@ -1,10 +1,11 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Calendar, MapPin, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getActivityBySlug, type Activity } from "@/lib/activities";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Carousel,
   CarouselContent,
@@ -16,6 +17,8 @@ import {
 const ActivityDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { language } = useLanguage();
   const [activity, setActivity] = useState<Activity | null>(null);
 
   useEffect(() => {
@@ -25,12 +28,12 @@ const ActivityDetail = () => {
         if (foundActivity) {
           setActivity(foundActivity);
         } else {
-          navigate("/activites");
+          navigate(`/${language}/activites`);
         }
       }
     };
     loadActivity();
-  }, [slug, navigate]);
+  }, [slug, navigate, language]);
 
   const handleShare = async () => {
     const url = window.location.href;
@@ -57,7 +60,7 @@ const ActivityDetail = () => {
         {/* Back Button */}
         <Button
           variant="ghost"
-          onClick={() => navigate("/activites")}
+          onClick={() => navigate(`/${language}/activites`)}
           className="mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />

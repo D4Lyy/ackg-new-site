@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Search } from "lucide-react";
+import { Search, Calendar } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import ActivityCard from "@/components/ActivityCard";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { getActivities, type Activity } from "@/lib/activities";
 
 const Activities = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,24 +22,36 @@ const Activities = () => {
   }, []);
 
   const filteredActivities = useMemo(() => {
-    if (!searchQuery.trim()) return activities;
+    let filtered = activities;
     
-    const query = searchQuery.toLowerCase();
-    return activities.filter(
-      (activity) =>
-        activity.title.toLowerCase().includes(query) ||
-        activity.location.toLowerCase().includes(query) ||
-        activity.content.toLowerCase().includes(query)
-    );
-  }, [activities, searchQuery]);
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (activity) =>
+          activity.title.toLowerCase().includes(query) ||
+          activity.location.toLowerCase().includes(query) ||
+          activity.content.toLowerCase().includes(query)
+      );
+    }
+    
+    // Filter by date
+    if (dateFilter.trim()) {
+      filtered = filtered.filter((activity) =>
+        activity.date.includes(dateFilter)
+      );
+    }
+    
+    return filtered;
+  }, [activities, searchQuery, dateFilter]);
 
   return (
     <div className="min-h-screen">
       <HeroSection title="Nos activités" />
 
       <section className="container mx-auto px-4 py-16">
-        {/* Search */}
-        <div className="max-w-2xl mx-auto mb-12">
+        {/* Search and Filters */}
+        <div className="max-w-2xl mx-auto mb-12 space-y-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
@@ -46,6 +59,16 @@ const Activities = () => {
               placeholder="Rechercher une activité..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 h-12 text-base"
+            />
+          </div>
+          <div className="relative">
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Filtrer par date (ex: 2024)..."
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
               className="pl-10 h-12 text-base"
             />
           </div>

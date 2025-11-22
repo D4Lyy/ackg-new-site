@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "./ui/card";
 import { formatUrlSlug } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ActivityCardProps {
   title: string;
@@ -14,11 +15,12 @@ interface ActivityCardPropsExtended extends ActivityCardProps {
 }
 
 const ActivityCard = ({ title, date, location, image, images }: ActivityCardPropsExtended) => {
+  const { language } = useLanguage();
   const slug = formatUrlSlug(title);
   const displayImage = images && images.length > 0 ? images[0] : image;
 
   return (
-    <Link to={`/activite/${slug}`}>
+    <Link to={`/${language}/activite/${slug}`}>
       <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
         <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 relative overflow-hidden">
           {displayImage && (
