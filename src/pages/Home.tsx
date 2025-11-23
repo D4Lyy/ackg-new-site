@@ -1,68 +1,75 @@
-import { Link } from "react-router-dom";
-import { GraduationCap, Heart, Users } from "lucide-react";
-import { useState, useEffect } from "react";
-import HeroSection from "@/components/HeroSection";
-import ActivityCard from "@/components/ActivityCard";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Heart, BookOpen, Users } from "lucide-react";
+import ActivityCard from "@/components/ActivityCard";
+import { useEffect, useState } from "react";
 import { getActivities, type Activity } from "@/lib/activities";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Home = () => {
-  const { language } = useLanguage();
-  const [activities, setActivities] = useState<Activity[]>([]);
-  
+  const { t } = useLanguage();
+  const location = useLocation();
+  const currentLang = location.pathname.startsWith("/ku") ? "ku" : "fr";
+  const [recentActivities, setRecentActivities] = useState<Activity[]>([]);
+
   useEffect(() => {
     const loadActivities = async () => {
       const data = await getActivities();
-      setActivities(data.slice(0, 3));
+      setRecentActivities(data.slice(0, 3));
     };
     loadActivities();
   }, []);
 
   return (
     <div className="min-h-screen">
-      <HeroSection
-        title="ASSOCIATION CULTURELLE KURDE DE GENÈVE"
-        subtitle="Pour diffuser la culture kurde en Suisse"
-      />
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+        {/* Background with gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/20 to-secondary/20" />
+        
+        {/* Content */}
+        <div className="relative z-10 text-center px-4 py-20">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            {t("home.title")}
+          </h1>
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            {t("home.subtitle")}
+          </p>
+          <Button size="lg" asChild className="text-lg px-8">
+            <Link to={`/${currentLang}/a-propos`}>{t("nav.about")}</Link>
+          </Button>
+        </div>
+      </section>
 
       {/* Mission Section */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-12">Notre mission</h2>
+      <section className="container mx-auto px-4 py-20">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">{t("home.mission.title")}</h2>
         <div className="grid md:grid-cols-3 gap-8">
-          <Card className="text-center">
-            <CardContent className="pt-8">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                <Users className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="font-semibold mb-3">Préservation de la culture</h3>
-              <p className="text-sm text-muted-foreground">
-                Notre but est la préservation, la défense et le développement des valeurs kurdes ainsi que l'intégration des kurdes dans la société helvétique
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardContent className="p-8">
+              <Users className="w-12 h-12 mb-4 text-primary" />
+              <h3 className="text-xl font-bold mb-3">{t("home.mission.culture.title")}</h3>
+              <p className="text-muted-foreground">
+                {t("home.mission.culture.desc")}
               </p>
             </CardContent>
           </Card>
-
-          <Card className="text-center">
-            <CardContent className="pt-8">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-secondary/10 flex items-center justify-center">
-                <GraduationCap className="w-8 h-8 text-secondary" />
-              </div>
-              <h3 className="font-semibold mb-3">Apprentissage de la langue</h3>
-              <p className="text-sm text-muted-foreground">
-                Nous proposons des cours de langues pour tous les kurdes vivant en Suisse. Les cours sont enseignés par des enseignants kurdes expérimentés
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardContent className="p-8">
+              <BookOpen className="w-12 h-12 mb-4 text-accent" />
+              <h3 className="text-xl font-bold mb-3">{t("home.mission.language.title")}</h3>
+              <p className="text-muted-foreground">
+                {t("home.mission.language.desc")}
               </p>
             </CardContent>
           </Card>
-
-          <Card className="text-center">
-            <CardContent className="pt-8">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-accent/10 flex items-center justify-center">
-                <Heart className="w-8 h-8 text-accent" />
-              </div>
-              <h3 className="font-semibold mb-3">Activités pour tous</h3>
-              <p className="text-sm text-muted-foreground">
-                Organisation d'événements culturels et sociaux afin de favoriser les liens entre Kurdes installés en Suisse
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardContent className="p-8">
+              <Heart className="w-12 h-12 mb-4 text-secondary" />
+              <h3 className="text-xl font-bold mb-3">{t("home.mission.activities.title")}</h3>
+              <p className="text-muted-foreground">
+                {t("home.mission.activities.desc")}
               </p>
             </CardContent>
           </Card>
@@ -70,59 +77,56 @@ const Home = () => {
       </section>
 
       {/* Language Courses Section */}
-      <section className="bg-muted/30 py-16">
+      <section className="bg-muted/30 py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8">Cours de langue Kurde</h2>
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="aspect-video bg-gradient-to-br from-secondary/20 to-accent/20 rounded-lg overflow-hidden">
-              {/* Placeholder for course image */}
-            </div>
+          <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-muted-foreground mb-6">
-                Les enseignants utilisés de notre communauté kurde à Genève ont à cœur de transmettre la richesse de notre langue et de notre culture. Cours adaptés aux enfants, à partir de 5 ans qui bénéficient d'un apprentissage adapté, ludique et stimulant. Cours pour adultes également disponibles.
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("home.courses.title")}</h2>
+              <p className="text-lg text-muted-foreground mb-6">
+                {t("home.courses.desc")}
               </p>
-              <Link to={`/${language}/cours-de-langues`}>
-                <Button size="lg" className="font-semibold">
-                  En savoir plus
-                </Button>
-              </Link>
+              <Button size="lg" asChild>
+                <Link to={`/${currentLang}/cours-de-langues`}>{t("home.courses.button")}</Link>
+              </Button>
+            </div>
+            <div className="relative h-[400px] rounded-lg overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20">
+              {/* Placeholder for course image */}
             </div>
           </div>
         </div>
       </section>
 
       {/* Support Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10 rounded-2xl p-8 md:p-12 text-center">
-            <h2 className="text-3xl font-bold mb-4">
-              Soutenir la diffusion de la culture kurde
+      <section className="container mx-auto px-4 py-20">
+        <Card className="bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10">
+          <CardContent className="p-12 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              {t("home.support.title")}
             </h2>
-            <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Votre soutien nous aide à continuer notre mission de préservation et de diffusion de la culture kurde en Suisse. Chaque contribution fait la différence.
+            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+              {t("home.support.desc")}
             </p>
-            <Button size="lg" variant="default" className="font-semibold">
-              Faire un don
+            <Button size="lg" variant="default">
+              {t("home.support.button")}
             </Button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </section>
 
       {/* Princess Visit Section */}
-      <section className="bg-muted/30 py-16">
+      <section className="bg-muted/30 py-20">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg overflow-hidden relative">
-              <div className="absolute inset-0 bg-black/20"></div>
-              {/* Placeholder pour photo de la visite */}
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="relative h-[400px] rounded-lg overflow-hidden bg-gradient-to-br from-secondary/20 to-primary/20">
+              {/* Placeholder for princess visit image */}
             </div>
             <div>
-              <h2 className="text-3xl font-bold mb-4">Visite à la princesse kurde</h2>
-              <p className="text-muted-foreground mb-6">
-                Nous avons eu l'honneur de recevoir la visite de la princesse kurde lors de notre événement culturel annuel. Une rencontre mémorable qui témoigne de l'importance de notre patrimoine et de nos traditions.
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("home.princess.title")}</h2>
+              <p className="text-lg text-muted-foreground mb-6">
+                {t("home.princess.desc")}
               </p>
-              <Button size="lg" className="font-semibold">
-                Découvrir l'événement
+              <Button size="lg" variant="outline">
+                {t("home.princess.button")}
               </Button>
             </div>
           </div>
@@ -130,19 +134,20 @@ const Home = () => {
       </section>
 
       {/* Activities Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold">Nos Activités</h2>
-          <Link to={`/${language}/activites`}>
-            <Button variant="outline">Voir toutes</Button>
-          </Link>
+      <section className="container mx-auto px-4 py-20">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("home.activities.title")}</h2>
+          <p className="text-lg text-muted-foreground mb-6">
+            {t("home.activities.desc")}
+          </p>
+          <Button variant="outline" asChild>
+            <Link to={`/${currentLang}/activites`}>{t("home.activities.viewAll")}</Link>
+          </Button>
         </div>
-        <p className="text-muted-foreground mb-8">
-          Nous organisons de nombreuses activités, ouvertes à tous!
-        </p>
-        {activities.length > 0 ? (
+        
+        {recentActivities.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {activities.map((activity) => (
+            {recentActivities.map((activity) => (
               <ActivityCard key={activity.id} {...activity} />
             ))}
           </div>
@@ -150,7 +155,7 @@ const Home = () => {
           <Card>
             <CardContent className="p-12 text-center">
               <p className="text-muted-foreground">
-                Aucune activité disponible pour le moment. Revenez bientôt!
+                {t("home.activities.none")}
               </p>
             </CardContent>
           </Card>
