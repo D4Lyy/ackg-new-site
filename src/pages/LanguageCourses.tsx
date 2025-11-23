@@ -9,8 +9,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const LanguageCourses = () => {
+  const { t } = useLanguage();
+  
   const scheduleData = [
     { day: "Lu", times: ["18:00 - 19:30"] },
     { day: "Ma", times: ["18:00 - 19:30"] },
@@ -23,25 +26,20 @@ const LanguageCourses = () => {
 
   return (
     <div className="min-h-screen">
-      <HeroSection title="Cours de langues" />
+      <HeroSection 
+        title={t("courses.title")}
+        subtitle={t("courses.subtitle")}
+      />
 
       <section className="container mx-auto px-4 py-16">
         <div className="grid lg:grid-cols-2 gap-12 mb-16">
           {/* Description */}
           <div>
             <h2 className="text-3xl font-bold mb-6">
-              Une communauté locale de Suisse romande présente sur les réseaux sociaux
+              {t("courses.desc")}
             </h2>
             <div className="space-y-4 text-muted-foreground">
-              <p>
-                Découvrez l'art captivant du Kurde, enseigné par des professionnels passionnés. Nos cours s'adaptent à tous les niveaux, des débutants curieux aux danseurs expérimentés.
-              </p>
-              <p>
-                Notre communauté accueille également des élèves non Kurdes souhaitant s'initier à cet art ancestral enrichi de nombreuses influences culturelles. Rejoignez-nous pour explorer les joies de cette langue riche et vibrante.
-              </p>
-              <p>
-                En plus des cours réguliers, nous organisons également des événements spéciaux, des ateliers et des spectacles tout au long de l'année, offrant ainsi l'opportunité d'approfondir vos connaissances et de partager votre passion avec d'autres membres de la communauté.
-              </p>
+              <p>{t("courses.info.desc")}</p>
             </div>
           </div>
 
@@ -63,24 +61,24 @@ const LanguageCourses = () => {
           </div>
         </div>
 
-        {/* Schedule */}
+        {/* Course Info */}
         <div className="mb-16">
-          <h3 className="text-2xl font-bold mb-6">L'EMPLOI DU TEMPS D'ÉTUDIANTS</h3>
+          <h3 className="text-2xl font-bold mb-6">{t("courses.info.title")}</h3>
           <Card>
             <CardContent className="p-8">
-              <div className="grid grid-cols-7 gap-2">
-                {scheduleData.map((day) => (
-                  <div key={day.day} className="text-center">
-                    <div className="font-semibold mb-2">{day.day}</div>
-                    <div className="space-y-1">
-                      {day.times.map((time, i) => (
-                        <div key={i} className="text-sm bg-primary/5 p-2 rounded">
-                          {time}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold mb-2">{t("courses.info.children")}</h4>
+                  <p className="text-muted-foreground">{t("courses.schedule.children")}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-2">{t("courses.info.teens")}</h4>
+                  <p className="text-muted-foreground">{t("courses.schedule.teens")}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-2">{t("courses.info.adults")}</h4>
+                  <p className="text-muted-foreground">{t("courses.schedule.adults")}</p>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -133,7 +131,7 @@ const LanguageCourses = () => {
         <Card className="bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10">
           <CardContent className="p-12 text-center">
             <h3 className="text-2xl font-bold mb-4">
-              Inscrivez-vous dès maintenant
+              {t("courses.register")}
             </h3>
             <p className="text-muted-foreground mb-6">
               Les places sont limitées. Rejoignez notre communauté d'apprentissage!

@@ -1,8 +1,14 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Calendar, MapPin, Share2 } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Share2, Copy, Facebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { getActivityBySlug, type Activity } from "@/lib/activities";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -18,7 +24,8 @@ const ActivityDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const location = useLocation();
-  const { language } = useLanguage();
+  const { t } = useLanguage();
+  const currentLang = location.pathname.startsWith("/ku") ? "ku" : "fr";
   const [activity, setActivity] = useState<Activity | null>(null);
 
   useEffect(() => {
@@ -28,52 +35,71 @@ const ActivityDetail = () => {
         if (foundActivity) {
           setActivity(foundActivity);
         } else {
-          navigate(`/${language}/activites`);
+          navigate(`/${currentLang}/activites`);
         }
       }
     };
     loadActivity();
-  }, [slug, navigate, language]);
+  }, [slug, navigate, currentLang]);
 
-  const handleShare = async () => {
-    const url = window.location.href;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: activity?.title,
-          url: url,
-        });
-      } catch (err) {
-        // User cancelled
-      }
-    } else {
-      navigator.clipboard.writeText(url);
-      toast.success("Lien copié dans le presse-papier!");
-    }
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success(t("activity.copied"));
+  };
+
+  const handleShareFacebook = () => {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+  };
+
+  const handleShareTwitter = () => {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(activity?.title || '');
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
   };
 
   if (!activity) return null;
 
   return (
-    <div className="min-h-screen pt-20">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center py-20">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Back Button */}
         <Button
           variant="ghost"
-          onClick={() => navigate(`/${language}/activites`)}
+          onClick={() => navigate(`/${currentLang}/activites`)}
           className="mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Retour aux activités
+          {t("activity.back")}
         </Button>
 
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-start gap-4 mb-4">
             <h1 className="text-4xl font-bold">{activity.title}</h1>
-            <Button variant="outline" size="icon" onClick={handleShare}>
-              <Share2 className="w-4 h-4" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Share2 className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleCopyLink}>
+                  <Copy className="w-4 h-4 mr-2" />
+                  Copier le lien
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleShareFacebook}>
+                  <Facebook className="w-4 h-4 mr-2" />
+                  Partager sur Facebook
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleShareTwitter}>
+                  <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                  Partager sur X
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div className="flex flex-wrap gap-4 text-muted-foreground">
@@ -91,7 +117,7 @@ const ActivityDetail = () => {
         {/* Images Carousel */}
         {activity.images && activity.images.length > 0 && (
           <div className="mb-8">
-            <Carousel className="w-full max-w-4xl mx-auto">
+            <Carousel className="w-full">
               <CarouselContent>
                 {activity.images.map((image, index) => (
                   <CarouselItem key={index}>
@@ -112,14 +138,9 @@ const ActivityDetail = () => {
         )}
 
         {/* Content */}
-        <Card>
-          <CardContent className="p-8">
-            <div
-              className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: activity.content.replace(/\n/g, "<br />") }}
-            />
-          </CardContent>
-        </Card>
+        <div className="prose prose-lg max-w-none">
+          <div dangerouslySetInnerHTML={{ __html: activity.content.replace(/\n/g, "<br />") }} />
+        </div>
       </div>
     </div>
   );

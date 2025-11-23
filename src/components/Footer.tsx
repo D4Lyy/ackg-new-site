@@ -1,74 +1,71 @@
-import { Facebook, Mail, Phone } from "lucide-react";
+import { Facebook, Phone, Mail } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
+  const { t } = useLanguage();
+  const location = useLocation();
+  const currentLang = location.pathname.startsWith("/ku") ? "ku" : "fr";
+
   return (
-    <footer className="bg-muted/50 border-t border-border mt-20">
+    <footer className="bg-muted/30 border-t mt-auto">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-3 gap-8">
-          {/* Logo and description */}
+          {/* Logo and Description */}
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-kurdish-red via-kurdish-yellow to-kurdish-green p-1">
-                <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
-                  <span className="text-xl font-bold text-primary">AK</span>
-                </div>
-              </div>
-              <div>
-                <div className="text-sm font-semibold">Association Culturelle</div>
-                <div className="text-xs text-muted-foreground">Kurde de Genève</div>
-              </div>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary via-accent to-secondary" />
+              <span className="font-bold text-lg">ACKG</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              L'Association de la culture kurde à Genève est une association culturelle qui a pour but la diffusion et la promotion de la culture kurde en Suisse ainsi qu'en Europe.
+              {t("footer.description")}
             </p>
           </div>
 
           {/* Contact */}
           <div>
-            <h3 className="font-semibold mb-4">Contact</h3>
-            <div className="space-y-3">
-              <a
-                href="tel:+41779967363"
-                className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
+            <h3 className="font-semibold mb-4">{t("footer.contact")}</h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                +41 77 996 73 63
-              </a>
-              <a
-                href="mailto:info@ackg.ch"
-                className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
+                <span>+41 77 996 73 63</span>
+              </div>
+              <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
-                info@ackg.ch
-              </a>
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
+                <a href="mailto:info@ackg.ch" className="hover:text-primary transition-colors">
+                  info@ackg.ch
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
                 <Facebook className="w-4 h-4" />
-                Facebook
-              </a>
+                <a
+                  href="https://www.facebook.com/ackg.geneve"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  Facebook
+                </a>
+              </div>
             </div>
           </div>
 
           {/* Legal */}
           <div>
-            <h3 className="font-semibold mb-4">Informations</h3>
-            <div className="space-y-2">
-              <a href="#" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                Mentions légales
-              </a>
-              <a href="#" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                Politique de confidentialité
-              </a>
+            <h3 className="font-semibold mb-4">{t("footer.legal")}</h3>
+            <div className="space-y-2 text-sm">
+              <Link to={`/${currentLang}/mentions-legales`} className="block hover:text-primary transition-colors">
+                {t("footer.mentions")}
+              </Link>
+              <Link to={`/${currentLang}/a-propos`} className="block hover:text-primary transition-colors">
+                {t("footer.privacy")}
+              </Link>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-          © 2025 ACKG. All Rights Reserved.
+        <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
+          <p>© 2024 Association Culturelle Kurde de Genève. {t("footer.copyright")}</p>
         </div>
       </div>
     </footer>
