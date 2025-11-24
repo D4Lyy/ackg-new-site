@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "./ui/card";
-import { formatUrlSlug } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ActivityCardProps {
@@ -8,15 +7,15 @@ interface ActivityCardProps {
   date: string;
   location: string;
   image?: string;
+  slug?: string;
 }
 
 interface ActivityCardPropsExtended extends ActivityCardProps {
   images?: string[];
 }
 
-const ActivityCard = ({ title, date, location, image, images }: ActivityCardPropsExtended) => {
+const ActivityCard = ({ title, date, location, image, images, slug }: ActivityCardPropsExtended) => {
   const { language } = useLanguage();
-  const slug = formatUrlSlug(title);
   const displayImage = images && images.length > 0 ? images[0] : image;
 
   return (

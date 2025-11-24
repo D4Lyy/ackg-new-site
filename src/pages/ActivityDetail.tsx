@@ -41,23 +41,14 @@ const ActivityDetail = () => {
   useEffect(() => {
     const loadActivity = async () => {
       if (slug) {
-        const { data: activities } = await supabase
+        const { data: activity } = await supabase
           .from('activities')
-          .select('*');
+          .select('*')
+          .eq('slug', slug)
+          .maybeSingle();
         
-        // Format slug to match activity title
-        const foundActivity = activities?.find((a) => {
-          const activitySlug = a.title
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-+|-+$/g, "");
-          return activitySlug === slug;
-        });
-        
-        if (foundActivity) {
-          setActivity(foundActivity);
+        if (activity) {
+          setActivity(activity);
         } else {
           navigate(`/${currentLang}/activites`);
         }
@@ -85,7 +76,7 @@ const ActivityDetail = () => {
   if (!activity) return null;
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-20">
+    <div className="min-h-screen pt-20">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Back Button */}
         <Button
@@ -162,7 +153,7 @@ const ActivityDetail = () => {
         )}
 
         {/* Content */}
-        <div className="prose prose-lg max-w-none">
+        <div className="max-w-none">
           <div dangerouslySetInnerHTML={{ __html: activity.content.replace(/\n/g, "<br />") }} />
         </div>
       </div>

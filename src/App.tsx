@@ -44,7 +44,7 @@ const App = () => (
                 {/* French routes */}
                 <Route path="/fr/accueil" element={<Home />} />
                 <Route path="/fr/activites" element={<Activities />} />
-                <Route path="/fr/activites/:slug" element={<ActivityDetail />} />
+                <Route path="/fr/activite/:slug" element={<ActivityDetail />} />
                 <Route path="/fr/cours-de-langues" element={<LanguageCourses />} />
                 <Route path="/fr/a-propos" element={<About />} />
                 <Route path="/fr/mentions-legales" element={<LegalNotice />} />
@@ -52,7 +52,7 @@ const App = () => (
                 {/* Kurdish routes */}
                 <Route path="/ku/accueil" element={<Home />} />
                 <Route path="/ku/activites" element={<Activities />} />
-                <Route path="/ku/activites/:slug" element={<ActivityDetail />} />
+                <Route path="/ku/activite/:slug" element={<ActivityDetail />} />
                 <Route path="/ku/cours-de-langues" element={<LanguageCourses />} />
                 <Route path="/ku/a-propos" element={<About />} />
                 <Route path="/ku/mentions-legales" element={<LegalNotice />} />
@@ -65,7 +65,7 @@ const App = () => (
                 
                 {/* Legacy redirects */}
                 <Route path="/activites" element={<Navigate to="/fr/activites" replace />} />
-                <Route path="/activites/:slug" element={<Navigate to="/fr/activites/:slug" replace />} />
+                <Route path="/activite/:slug" element={<Navigate to="/fr/activite/:slug" replace />} />
                 <Route path="/cours-de-langues" element={<Navigate to="/fr/cours-de-langues" replace />} />
                 <Route path="/a-propos" element={<Navigate to="/fr/a-propos" replace />} />
                 

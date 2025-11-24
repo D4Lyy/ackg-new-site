@@ -1,4 +1,4 @@
-import { Facebook, Phone, Mail } from "lucide-react";
+import { Facebook, Phone, Mail, Instagram } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link, useLocation } from "react-router-dom";
 
@@ -39,12 +39,23 @@ const Footer = () => {
               <div className="flex items-center gap-2">
                 <Facebook className="w-4 h-4" />
                 <a
-                  href="https://www.facebook.com/ackg.geneve"
+                  href="https://www.facebook.com/people/Komela-Kultûrê-Kurdî-li-Cinêvê/100063537401743"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-primary transition-colors"
                 >
                   Facebook
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
+                <Instagram className="w-4 h-4" />
+                <a
+                  href="https://www.instagram.com/ack_geneve/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  Instagram
                 </a>
               </div>
             </div>
