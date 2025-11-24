@@ -3,9 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, BookOpen, Users } from "lucide-react";
 import ActivityCard from "@/components/ActivityCard";
+import HeroSection from "@/components/HeroSection";
 import { useEffect, useState } from "react";
-import { getActivities, type Activity } from "@/lib/activities";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+interface Activity {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  content: string;
+  image?: string;
+  images?: string[];
+}
 
 const Home = () => {
   const { t } = useLanguage();
@@ -15,8 +26,12 @@ const Home = () => {
 
   useEffect(() => {
     const loadActivities = async () => {
-      const data = await getActivities();
-      setRecentActivities(data.slice(0, 3));
+      const { data } = await supabase
+        .from('activities')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(3);
+      setRecentActivities(data || []);
     };
     loadActivities();
   }, []);
@@ -24,23 +39,10 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Background with gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/20 to-secondary/20" />
-        
-        {/* Content */}
-        <div className="relative z-10 text-center px-4 py-20">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-            {t("home.title")}
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            {t("home.subtitle")}
-          </p>
-          <Button size="lg" asChild className="text-lg px-8">
-            <Link to={`/${currentLang}/a-propos`}>{t("nav.about")}</Link>
-          </Button>
-        </div>
-      </section>
+      <HeroSection 
+        title={t("home.title")}
+        subtitle={t("home.subtitle")}
+      />
 
       {/* Mission Section */}
       <section className="container mx-auto px-4 py-20">

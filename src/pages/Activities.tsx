@@ -12,9 +12,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { getActivities, type Activity } from "@/lib/activities";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
+
+interface Activity {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  content: string;
+  image?: string;
+  images?: string[];
+}
 
 const Activities = () => {
   const { t } = useLanguage();
@@ -25,8 +35,11 @@ const Activities = () => {
 
   useEffect(() => {
     const loadActivities = async () => {
-      const data = await getActivities();
-      setActivities(data);
+      const { data } = await supabase
+        .from('activities')
+        .select('*')
+        .order('created_at', { ascending: false });
+      setActivities(data || []);
       setLoading(false);
     };
     loadActivities();

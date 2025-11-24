@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { PlusCircle, Trash2, LogOut, Edit, Settings, Upload, UserPlus, Calendar as CalendarIcon } from "lucide-react";
+import { PlusCircle, Trash2, LogOut, Edit, Settings, UserPlus, Calendar as CalendarIcon, X, MoveUp, MoveDown } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -140,6 +140,31 @@ const Admin = () => {
       };
       reader.readAsDataURL(file);
     });
+  };
+
+  const removeImage = (index: number) => {
+    if (editingActivity) {
+      const newImages = [...(editingActivity.images || [])];
+      newImages.splice(index, 1);
+      setEditingActivity({ ...editingActivity, images: newImages });
+    } else {
+      const newImages = [...newActivity.images];
+      newImages.splice(index, 1);
+      setNewActivity({ ...newActivity, images: newImages });
+    }
+  };
+
+  const moveImage = (index: number, direction: 'up' | 'down') => {
+    const images = editingActivity ? (editingActivity.images || []) : newActivity.images;
+    const newImages = [...images];
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= newImages.length) return;
+    [newImages[index], newImages[newIndex]] = [newImages[newIndex], newImages[index]];
+    if (editingActivity) {
+      setEditingActivity({ ...editingActivity, images: newImages });
+    } else {
+      setNewActivity({ ...newActivity, images: newImages });
+    }
   };
 
   const handleAddActivity = async (e: React.FormEvent) => {
@@ -357,6 +382,31 @@ const Admin = () => {
               <div>
                 <Label>Images</Label>
                 <Input type="file" multiple accept="image/*" onChange={handleImageUpload} />
+                {(editingActivity?.images || newActivity.images).length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                    {(editingActivity?.images || newActivity.images).map((img, idx) => (
+                      <div key={idx} className="relative group">
+                        <img src={img} alt={`Preview ${idx + 1}`} className="w-full h-32 object-cover rounded-lg" />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-1">
+                          {idx > 0 && (
+                            <Button type="button" size="icon" variant="secondary" className="h-8 w-8" onClick={() => moveImage(idx, 'up')}>
+                              <MoveUp className="h-4 w-4" />
+                            </Button>
+                          )}
+                          {idx < (editingActivity?.images || newActivity.images).length - 1 && (
+                            <Button type="button" size="icon" variant="secondary" className="h-8 w-8" onClick={() => moveImage(idx, 'down')}>
+                              <MoveDown className="h-4 w-4" />
+                            </Button>
+                          )}
+                          <Button type="button" size="icon" variant="destructive" className="h-8 w-8" onClick={() => removeImage(idx)}>
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <div className="absolute top-1 left-1 bg-black/70 text-white text-xs px-2 py-1 rounded">{idx + 1}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="flex gap-2">
                 <Button type="submit"><PlusCircle className="w-4 h-4 mr-2" />{editingActivity ? "Mettre à jour" : "Ajouter"}</Button>

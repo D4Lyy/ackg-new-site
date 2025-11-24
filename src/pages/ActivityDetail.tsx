@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getActivityBySlug, type Activity } from "@/lib/activities";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
 import {
@@ -19,6 +19,16 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+
+interface Activity {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  content: string;
+  image?: string;
+  images?: string[];
+}
 
 const ActivityDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -31,7 +41,21 @@ const ActivityDetail = () => {
   useEffect(() => {
     const loadActivity = async () => {
       if (slug) {
-        const foundActivity = await getActivityBySlug(slug);
+        const { data: activities } = await supabase
+          .from('activities')
+          .select('*');
+        
+        // Format slug to match activity title
+        const foundActivity = activities?.find((a) => {
+          const activitySlug = a.title
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+          return activitySlug === slug;
+        });
+        
         if (foundActivity) {
           setActivity(foundActivity);
         } else {
