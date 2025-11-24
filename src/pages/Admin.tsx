@@ -21,7 +21,17 @@ interface Activity {
   location: string;
   content: string;
   images?: string[];
+  slug?: string;
 }
+
+const generateSlug = () => {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let slug = '';
+  for (let i = 0; i < 8; i++) {
+    slug += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return slug;
+};
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -174,7 +184,8 @@ const Admin = () => {
       return;
     }
     const dateStr = activityDate ? format(activityDate, "yyyy-MM-dd") : new Date().toISOString().split('T')[0];
-    const { error } = await supabase.from('activities').insert([{ ...newActivity, date: dateStr }]);
+    const slug = generateSlug();
+    const { error } = await supabase.from('activities').insert([{ ...newActivity, date: dateStr, slug }]);
     if (error) toast.error(error.message);
     else {
       setNewActivity({ title: "", date: "", location: "", content: "", images: [] });

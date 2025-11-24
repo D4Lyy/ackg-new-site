@@ -12,6 +12,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
@@ -24,7 +32,10 @@ interface Activity {
   content: string;
   image?: string;
   images?: string[];
+  slug?: string;
 }
+
+const ITEMS_PER_PAGE = 12;
 
 const Activities = () => {
   const { t } = useLanguage();
@@ -32,6 +43,7 @@ const Activities = () => {
   const [date, setDate] = useState<Date>();
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const loadActivities = async () => {
@@ -69,6 +81,18 @@ const Activities = () => {
     
     return filtered;
   }, [activities, searchQuery, date]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredActivities.length / ITEMS_PER_PAGE);
+  const paginatedActivities = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredActivities.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredActivities, currentPage]);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, date]);
 
   return (
     <div className="min-h-screen">
@@ -131,11 +155,44 @@ const Activities = () => {
             </CardContent>
           </Card>
         ) : filteredActivities.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredActivities.map((activity) => (
-              <ActivityCard key={activity.id} {...activity} />
-            ))}
-          </div>
+          <>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {paginatedActivities.map((activity) => (
+                <ActivityCard key={activity.id} {...activity} />
+              ))}
+            </div>
+            
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => setCurrentPage(page)}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
+          </>
         ) : (
           <Card>
             <CardContent className="p-12 text-center">

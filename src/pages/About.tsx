@@ -81,23 +81,40 @@ const About = () => {
 
         {/* Contact Section */}
         <Card className="mt-16 bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10">
-          <CardContent className="p-12 text-center">
-            <h3 className="text-2xl font-bold mb-4">{t("about.contact.title")}</h3>
-            <div className="space-y-2 text-muted-foreground">
-              <p>Association Culturelle Kurde de Genève</p>
-              <p><strong>{t("about.contact.address")}:</strong> Genève, Suisse</p>
-              <p className="mt-4">
-                <strong>{t("about.contact.phone")}:</strong>{" "}
-                <a href="tel:+41779967363" className="hover:text-primary">
-                  +41 77 996 73 63
-                </a>
-              </p>
-              <p>
-                <strong>{t("about.contact.email")}:</strong>{" "}
-                <a href="mailto:info@ackg.ch" className="hover:text-primary">
-                  info@ackg.ch
-                </a>
-              </p>
+          <CardContent className="p-8">
+            <h3 className="text-2xl font-bold mb-6 text-center">{t("about.contact.title")}</h3>
+            <div className="grid md:grid-cols-2 gap-8 items-start">
+              {/* Facebook Embed */}
+              <div className="flex justify-center">
+                <iframe
+                  src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fpeople%2FKomela-Kult%C3%BBr%C3%AA-Kurd%C3%AE-li-Cin%C3%AAv%C3%AA%2F100063537401743&tabs&width=340&height=300&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId"
+                  width="340"
+                  height="300"
+                  style={{ border: 'none', overflow: 'hidden' }}
+                  scrolling="no"
+                  frameBorder="0"
+                  allowFullScreen={true}
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                ></iframe>
+              </div>
+              
+              {/* Contact Info */}
+              <div className="space-y-3 text-muted-foreground">
+                <p className="font-semibold text-foreground">Association Culturelle Kurde de Genève</p>
+                <p><strong>{t("about.contact.address")}:</strong> Genève, Suisse</p>
+                <p>
+                  <strong>{t("about.contact.phone")}:</strong>{" "}
+                  <a href="tel:+41779967363" className="hover:text-primary transition-colors">
+                    +41 77 996 73 63
+                  </a>
+                </p>
+                <p>
+                  <strong>{t("about.contact.email")}:</strong>{" "}
+                  <a href="mailto:info@ackg.ch" className="hover:text-primary transition-colors">
+                    info@ackg.ch
+                  </a>
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
