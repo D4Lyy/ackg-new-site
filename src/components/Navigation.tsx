@@ -16,6 +16,27 @@ const Navigation = () => {
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (isOpen) {
+        const target = e.target as HTMLElement;
+        const nav = document.querySelector('nav');
+        if (nav && !nav.contains(target)) {
+          setIsOpen(false);
+        }
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   // Extract current language from URL
   useEffect(() => {
     const pathLang = location.pathname.split('/')[1];

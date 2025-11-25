@@ -131,7 +131,7 @@ const ActivityDetail = () => {
 
         {/* Images Carousel */}
         {activity.images && activity.images.length > 0 && (
-          <div className="mb-8">
+          <div className="mb-8 relative">
             <Carousel className="w-full">
               <CarouselContent>
                 {activity.images.map((image, index) => (
@@ -146,8 +146,8 @@ const ActivityDetail = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
+              <CarouselPrevious className="left-2 md:left-[-50px]" />
+              <CarouselNext className="right-2 md:right-[-50px]" />
             </Carousel>
           </div>
         )}
