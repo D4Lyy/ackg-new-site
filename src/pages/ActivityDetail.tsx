@@ -146,8 +146,8 @@ const ActivityDetail = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="left-2 md:left-[-50px]" />
-              <CarouselNext className="right-2 md:right-[-50px]" />
+              <CarouselPrevious className="left-4" />
+              <CarouselNext className="right-4" />
             </Carousel>
           </div>
         )}
