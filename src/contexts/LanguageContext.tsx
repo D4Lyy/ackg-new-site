@@ -57,8 +57,10 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Courses
     "courses.title": "Cours de langue Kurde",
-    "courses.desc": "Découvrez nos cours de langue kurde pour enfants et adultes",
     "courses.subtitle": "Préservons ensemble notre langue et notre culture",
+    "courses.desc": "Découvrez nos cours de langue kurde pour enfants",
+    "courses.alphabet": "L'alphabet Kurde-Kurmandji",
+    "courses.alphabet.desc": "L’Association de la culture kurde a remis l’alphabet kurde à la Croix-Rouge suisse à Genève. \nLe représentant de l’Association de la culture kurde à Genève, M. Aziz Kalo, s’est rendu au siège de la Croix-Rouge suisse le 8 avril 2019. Lors de sa visite, Kalo a remis une carte des lettres de la langue kurde et leur phonétique au représentants de l’organisation. \nDe leur côté, les représentants de la Croix-Rouge ont exprimé leurs chaleureux remerciements et leur approbation pour cette initiative intellectuelle, et la plaque a été placée dans le coffre de l’exposition spéciale de l’Alphabet des langues du monde. \nIl convient de mentionner que la Croix-Rouge suisse a mis en place une exposition spéciale pour les alphabets des langues du monde à Genève.",
     "courses.info.title": "Informations sur les cours",
     "courses.info.children": "Cours pour enfants (5-12 ans)",
     "courses.info.teens": "Cours pour adolescents (13-17 ans)",
@@ -68,12 +70,20 @@ const translations: Record<Language, Record<string, string>> = {
     "courses.schedule.children": "Enfants : Mercredi 14h-16h",
     "courses.schedule.teens": "Adolescents : Mercredi 16h-18h",
     "courses.schedule.adults": "Adultes : Samedi 10h-12h",
+    "courses.cards.schedule.title": "Horaires flexibles",
+    "courses.cards.schedule.desc": "Cours disponibles en semaine et le weekend",
+    "courses.cards.groups.title": "Petits groupes",
+    "courses.cards.groups.desc": "Maximum 12 élèves par classe",
+    "courses.cards.duration.title": "1h30 par cours",
+    "courses.cards.duration.desc": "Sessions intensives et efficaces",
+    "courses.cards.location.title": "Centre-ville",
+    "courses.cards.location.desc": "Facilement accessible en transport",
     "courses.register": "S'inscrire aux cours",
     
     // About
     "about.title": "À propos de l'ACKG",
     "about.mission.title": "Notre mission",
-    "about.mission.desc": "L'Association Culturelle Kurde de Genève (ACKG) a pour mission de préserver, défendre et développer les valeurs kurdes tout en favorisant l'intégration des Kurdes dans la société suisse.",
+    "about.mission.desc": "L’Association culturelle kurde de Genève (ACKG) est une organisation culturelle bénévole qui s’efforce de promouvoir la culture kurde, de renforcer les liens culturels entre les Suisses et les Kurdes et de sensibiliser à l’usage de la langue kurde dans la société en proposant des cours d’apprentissage du kurde pour enfants et adultes.\nL’association s’efforce de renforcer la compréhension et la coopération entre les différentes cultures, et d’encourager la diversité culturelle et linguistique en Suisse.\nElle travaille également à renforcer les relations entre les membres de la communauté kurde, la cohésion sociale et à protéger les valeurs communautaires, en organisant des activités culturelles, sociales et de divertissement, telles que des expositions d’art, des concerts, des conférences, des discussions et d’autres activités culturelles.",
     "about.values.title": "Nos valeurs",
     "about.values.culture": "Préservation culturelle",
     "about.values.education": "Éducation et transmission",
@@ -129,6 +139,7 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.user.added": "Utilisateur ajouté avec succès!",
     "admin.activity.dateFilter": "Filtrer par date",
     "admin.activity.selectDate": "Sélectionner une date",
+    "admin.activity.clearDate": "Effacer la date",
     
     // Footer
     "footer.description": "Association Culturelle Kurde de Genève",
@@ -137,7 +148,7 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.email": "Email",
     "footer.legal": "Informations légales",
     "footer.mentions": "Mentions légales",
-    "footer.privacy": "Politique de confidentialité",
+    "footer.about": "À propos",
     "footer.copyright": "Tous droits réservés",
     
     // Legal
@@ -207,6 +218,8 @@ const translations: Record<Language, Record<string, string>> = {
     "courses.title": "وانەی زمانی کوردی",
     "courses.desc": "وانەکانی زمانی کوردیمان بۆ منداڵان و گەورەکان بدۆزەرەوە",
     "courses.subtitle": "با پێکەوە زمان و کولتوورمان بپارێزین",
+    "courses.alphabet": "ئەلفوبێی کوردی-کوردمانجی",
+    "courses.alphabet.desc": "کۆمەڵەی کولتووری کوردی ئەلفوبێی کوردی بۆ سوپاسگوزاریی سەرخۆشەویستی سویسری لە ژنێڤ پێشکەش کرد. \nنوێنەری کۆمەڵەی کولتووری کوردی لە ژنێڤ، مەلا عەزیز کەلو، ڕۆژی ٨ی نیسانی ٢٠١٩ سەردانی ناوەندی سوپاسگوزاریی سەرخۆشەویستی سویسری کرد. لە کاتی سەردانەکەیدا، کەلو کارتی پیتەکانی زمانى کوردی و فۆنێتیکى ئەوان بۆ نوێنەرانی ڕێکخراوەکە پ ێشکەش کرد. \nلە لایەن خۆیانەوە، نوێنەرانی سوپاسگوزاریی سەرخۆشەویستی سویسری سوپاسگوزاریی گەرم و پەسەندکردنیان بۆ ئەم هەوڵی زانستییە ڕوونکردنەوە و پلیتەکە لە ناو خزانی نیشاندانی تایبەتی ئەلفوبێی زمانە جیهانییەکان دانرا.",
     "courses.info.title": "زانیاری دەربارەی وانەکان",
     "courses.info.children": "وانە بۆ منداڵان (٥-١٢ ساڵ)",
     "courses.info.teens": "وانە بۆ لاوان (١٣-١٧ ساڵ)",
@@ -216,6 +229,14 @@ const translations: Record<Language, Record<string, string>> = {
     "courses.schedule.children": "منداڵان: چوارشەممە ٢-٤ی دوای نیوەڕۆ",
     "courses.schedule.teens": "لاوان: چوارشەممە ٤-٦ی دوای نیوەڕۆ",
     "courses.schedule.adults": "گەورەکان: شەممە ١٠-١٢ی بەیانی",
+    "courses.cards.schedule.title": "کاتی گونجاو",
+    "courses.cards.schedule.desc": "وانەکان بەردەستە لە هەفتە و کۆتایی هەفتە",
+    "courses.cards.groups.title": "کۆمەڵە بچووک",
+    "courses.cards.groups.desc": "زیاترین ژمارەی قوتابی لە هەر کلاسیەکدا ١٢یە",
+    "courses.cards.duration.title": "١ کاتژمێر و نیوە",
+    "courses.cards.duration.desc": "کۆرسە کاتییەکان و کاریگەرییەکان",
+    "courses.cards.location.title": "ناوچەی ناو شار",
+    "courses.cards.location.desc": "ئاسان بە گەیشتن بە هاتوچۆ",
     "courses.register": "تۆمارکردن لە وانەکان",
     
     // About
@@ -277,6 +298,7 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.user.added": "بەکارهێنەر بە سەرکەوتوویی زیادکرا!",
     "admin.activity.dateFilter": "پاڵاوتن بە بەروار",
     "admin.activity.selectDate": "هەڵبژاردنی بەروار",
+    "admin.activity.clearDate": "سڕینەوەی بەروار",
     
     // Footer
     "footer.description": "کۆمەڵەی کولتووری کوردیی ژنێڤ",
@@ -285,7 +307,7 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.email": "ئیمەیڵ",
     "footer.legal": "زانیاری یاسایی",
     "footer.mentions": "باسکردنی یاسایی",
-    "footer.privacy": "سیاسەتی تایبەتێتی",
+    "footer.about": "دەربارە",
     "footer.copyright": "هەموو مافەکان پارێزراون",
     
     // Legal

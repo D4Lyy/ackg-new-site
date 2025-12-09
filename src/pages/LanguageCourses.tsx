@@ -24,18 +24,28 @@ const LanguageCourses = () => {
     { day: "Di", times: [] },
   ];
 
+  const slides = import.meta.glob("/public/language_courses_slides/*.{png,jpg,jpeg,webp}", {
+    eager: true,
+    import: "default",
+  });
+
+  const imageUrls = Object.values(slides);
+
+  console.log(imageUrls);
+
   return (
     <div className="min-h-screen">
       <HeroSection 
         title={t("courses.title")}
         subtitle={t("courses.subtitle")}
+        backgroundImage="/hero/language_courses.jpg"
       />
 
-      <section className="container mx-auto px-4 py-16">
-        <div className="grid lg:grid-cols-2 gap-12 mb-16">
+      <section className="container mx-auto px-4 py-10">
+        <div className={`grid gap-12 items-center mb-16 ${imageUrls.length > 0 ? 'lg:grid-cols-2' : 'lg:grid-cols-1 w-[80%] mx-auto'}`}>
           {/* Description */}
           <div>
-            <h2 className="text-3xl font-bold mb-6">
+            <h2 className={`text-3xl font-bold mb-6 ${imageUrls.length > 0 ? '' : 'text-center'}`}>
               {t("courses.desc")}
             </h2>
             <div className="space-y-4 text-muted-foreground">
@@ -44,23 +54,51 @@ const LanguageCourses = () => {
           </div>
 
           {/* Image Carousel */}
-          <div>
-            <Carousel className="w-full">
-              <CarouselContent>
-                {[1, 2, 3].map((i) => (
-                  <CarouselItem key={i}>
-                    <div className="aspect-video bg-gradient-to-br from-secondary/20 to-accent/20 rounded-lg overflow-hidden">
-                      {/* Placeholder for carousel images */}
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="left-4" />
-              <CarouselNext className="right-4" />
-            </Carousel>
+          {imageUrls.length > 0 ? (
+            <div>
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {imageUrls.map((url, i) => (
+                    // if mobile, set height to 300px, else 500px
+                    <CarouselItem key={i}>
+                      <img
+                        src={`${url}`}
+                        alt={`Slide ${i}`}
+                        className="aspect-video w-full h-[300px] md:h-[500px] object-cover rounded-lg"
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-4" />
+                <CarouselNext className="right-4" />
+              </Carousel>
+            </div>
+          ) : null}
+        </div>
+      </section>
+
+      {/* Alphabet Section */}
+        <section className="bg-muted/30 py-10">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="relative rounded-lg overflow-hidden w-[400px] mx-auto">
+              <img
+                src="/language_courses/alphabet 2025_page-0001.jpg"
+                alt="Alphabet"
+                className="w-full rounded-lg h-auto"
+              />
+            </div>
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("courses.alphabet")}</h2>
+              <p className="text-lg text-muted-foreground mb-6 whitespace-pre-line">
+                {t("courses.alphabet.desc")}
+              </p>
+            </div>
           </div>
         </div>
+      </section>
 
+      <section className="container mx-auto px-4 py-10">
         {/* Course Info */}
         <div className="mb-16">
           <h3 className="text-2xl font-bold mb-6">{t("courses.info.title")}</h3>
@@ -89,9 +127,9 @@ const LanguageCourses = () => {
           <Card>
             <CardContent className="p-6 text-center">
               <Calendar className="w-8 h-8 mx-auto mb-3 text-primary" />
-              <h4 className="font-semibold mb-2">Horaires flexibles</h4>
+              <h4 className="font-semibold mb-2">{t("courses.cards.schedule.title")}</h4>
               <p className="text-sm text-muted-foreground">
-                Cours disponibles en semaine et le weekend
+                {t("courses.cards.schedule.desc")}
               </p>
             </CardContent>
           </Card>
@@ -99,9 +137,9 @@ const LanguageCourses = () => {
           <Card>
             <CardContent className="p-6 text-center">
               <Users className="w-8 h-8 mx-auto mb-3 text-secondary" />
-              <h4 className="font-semibold mb-2">Petits groupes</h4>
+              <h4 className="font-semibold mb-2">{t("courses.cards.groups.title")}</h4>
               <p className="text-sm text-muted-foreground">
-                Maximum 12 élèves par classe
+                {t("courses.cards.groups.desc")}
               </p>
             </CardContent>
           </Card>
@@ -109,9 +147,9 @@ const LanguageCourses = () => {
           <Card>
             <CardContent className="p-6 text-center">
               <Clock className="w-8 h-8 mx-auto mb-3 text-accent" />
-              <h4 className="font-semibold mb-2">1h30 par cours</h4>
+              <h4 className="font-semibold mb-2">{t("courses.cards.duration.title")}</h4>
               <p className="text-sm text-muted-foreground">
-                Sessions intensives et efficaces
+                {t("courses.cards.duration.desc")}
               </p>
             </CardContent>
           </Card>
@@ -119,9 +157,9 @@ const LanguageCourses = () => {
           <Card>
             <CardContent className="p-6 text-center">
               <MapPin className="w-8 h-8 mx-auto mb-3 text-primary" />
-              <h4 className="font-semibold mb-2">Centre-ville</h4>
+              <h4 className="font-semibold mb-2">{t("courses.cards.location.title")}</h4>
               <p className="text-sm text-muted-foreground">
-                Facilement accessible en transport
+                {t("courses.cards.location.desc")}
               </p>
             </CardContent>
           </Card>

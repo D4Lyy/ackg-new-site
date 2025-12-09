@@ -7,22 +7,25 @@ const About = () => {
   const { t } = useLanguage();
   
   const teamMembers = [
-    { name: "Nom Prénom", role: "Fonction" },
-    { name: "Nom Prénom", role: "Fonction" },
-    { name: "Nom Prénom", role: "Fonction" },
-    { name: "Nom Prénom", role: "Fonction" },
+    { name: "Aziz Kalo", role: "Président", image: "/about/aziz-249x300.png" },
+    { name: "Xdr Alyar", image: "/about/Xdr-249x300.png" },
+    { name: "Ismail Miro", image: "/about/1-249x300.png" },
+    { name: "Lina Oskan", image: "/about/3333-249x300.png" },
   ];
 
   return (
     <div className="min-h-screen">
-      <HeroSection title={t("about.title")} />
+      <HeroSection 
+      title={t("about.title")}
+      backgroundImage="/hero/fondateurs.jpg"
+      />
 
       <section className="container mx-auto px-4 py-16">
         {/* Mission Statement */}
         <div className="max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl font-bold mb-6">{t("about.mission.title")}</h2>
           <div className="prose prose-lg">
-            <p className="text-muted-foreground leading-relaxed">
+            <p className="text-muted-foreground leading-relaxed whitespace-pre-line text-justify">
               {t("about.mission.desc")}
             </p>
           </div>
@@ -31,12 +34,10 @@ const About = () => {
         {/* Values */}
         <div className="mb-16">
           <h2 className="text-3xl font-bold mb-8 text-center">{t("about.values.title")}</h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-10">
             <Card>
               <CardContent className="p-6">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center mb-4">
-                  <Heart className="w-6 h-6 text-primary" />
-                </div>
+                <Heart className="w-12 h-12 mb-4 text-primary mx-auto" />
                 <h3 className="font-semibold mb-3">{t("about.values.culture")}</h3>
                 <p className="text-sm text-muted-foreground">
                   Maintenir vivantes les traditions, la langue et les valeurs kurdes pour les générations futures
@@ -46,9 +47,7 @@ const About = () => {
 
             <Card>
               <CardContent className="p-6">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center mb-4">
-                  <BookOpen className="w-6 h-6 text-primary" />
-                </div>
+                <BookOpen className="w-12 h-12 mb-4 text-accent mx-auto" />
                 <h3 className="font-semibold mb-3">{t("about.values.education")}</h3>
                 <p className="text-sm text-muted-foreground">
                   Promouvoir les échanges culturels entre la communauté kurde et la société suisse
@@ -58,9 +57,7 @@ const About = () => {
 
             <Card>
               <CardContent className="p-6">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center mb-4">
-                  <Handshake className="w-6 h-6 text-primary" />
-                </div>
+                <Handshake className="w-12 h-12 mb-4 text-secondary mx-auto" />
                 <h3 className="font-semibold mb-3">{t("about.values.solidarity")}</h3>
                 <p className="text-sm text-muted-foreground">
                   Accompagner l'intégration des Kurdes en Suisse tout en préservant leur identité culturelle
@@ -77,11 +74,21 @@ const About = () => {
             {teamMembers.map((member, index) => (
               <Card key={index}>
                 <CardContent className="p-6 text-center">
-                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                    <Users className="w-12 h-12 text-muted-foreground" />
+                  <div className="w-40 h-40 mx-auto mb-4 rounded-full from-primary/20 to-accent/20 flex items-center justify-center">
+                    {member.image ? (
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      <Users className="w-full h-full text-muted-foreground" />
+                    )}
                   </div>
                   <h3 className="font-semibold mb-1">{member.name}</h3>
-                  <p className="text-sm text-muted-foreground">{member.role}</p>
+                  {member.role ? (
+                    <p className="text-sm text-muted-foreground">{member.role}</p>
+                  ) : null}
                 </CardContent>
               </Card>
             ))}
@@ -100,8 +107,6 @@ const About = () => {
                   className="w-full max-w-[340px]"
                   height="300"
                   style={{ border: 'none', overflow: 'hidden' }}
-                  scrolling="no"
-                  frameBorder="0"
                   allowFullScreen={true}
                   allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                 ></iframe>

@@ -96,9 +96,13 @@ const Activities = () => {
 
   return (
     <div className="min-h-screen">
-      <HeroSection title={t("activities.title")} />
+      <section className="relative h-[10vh] min-h-[150px] flex items-center justify-center overflow-hidden mt-20">
+        <h1 className="relative z-10 text-4xl md:text-6xl font-bold text-black mt-8">
+          {t("activities.title")}
+        </h1>
+      </section>
 
-      <section className="container mx-auto px-4 py-16">
+      <section className="container mx-auto px-4 py-6">
         {/* Search and Filters */}
         <div className="max-w-2xl mx-auto mb-12 space-y-4">
           <div className="relative">
@@ -139,7 +143,7 @@ const Activities = () => {
                     className="w-full"
                     onClick={() => setDate(undefined)}
                   >
-                    Effacer la date
+                    {t("admin.activity.clearDate")}
                   </Button>
                 </div>
               )}

@@ -25,7 +25,7 @@ const HeroSection = ({ title, subtitle, backgroundImage }: HeroSectionProps) => 
           {title}
         </h1>
         {subtitle && (
-          <p className="text-lg md:text-xl max-w-2xl mx-auto drop-shadow-md">
+          <p className="text-lg md:text-2xl max-w-2xl mx-auto drop-shadow-md mt-8">
             {subtitle}
           </p>
         )}

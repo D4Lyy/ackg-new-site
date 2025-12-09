@@ -42,6 +42,7 @@ const Home = () => {
       <HeroSection 
         title={t("home.title")}
         subtitle={t("home.subtitle")}
+        backgroundImage="/hero/slide.jpg"
       />
 
       {/* Mission Section */}
@@ -50,7 +51,7 @@ const Home = () => {
         <div className="grid md:grid-cols-3 gap-8">
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-8">
-              <Users className="w-12 h-12 mb-4 text-primary" />
+              <Users className="w-12 h-12 mb-4 text-primary mx-auto" />
               <h3 className="text-xl font-bold mb-3">{t("home.mission.culture.title")}</h3>
               <p className="text-muted-foreground">
                 {t("home.mission.culture.desc")}
@@ -59,7 +60,7 @@ const Home = () => {
           </Card>
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-8">
-              <BookOpen className="w-12 h-12 mb-4 text-accent" />
+              <BookOpen className="w-12 h-12 mb-4 text-accent mx-auto" />
               <h3 className="text-xl font-bold mb-3">{t("home.mission.language.title")}</h3>
               <p className="text-muted-foreground">
                 {t("home.mission.language.desc")}
@@ -68,7 +69,7 @@ const Home = () => {
           </Card>
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-8">
-              <Heart className="w-12 h-12 mb-4 text-secondary" />
+              <Heart className="w-12 h-12 mb-4 text-secondary mx-auto" />
               <h3 className="text-xl font-bold mb-3">{t("home.mission.activities.title")}</h3>
               <p className="text-muted-foreground">
                 {t("home.mission.activities.desc")}
@@ -92,7 +93,11 @@ const Home = () => {
               </Button>
             </div>
             <div className="relative h-[400px] rounded-lg overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20">
-              {/* Placeholder for course image */}
+              <img
+                src="/home/IMG_2457.jpg"
+                alt="Language Courses"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         </div>
@@ -120,16 +125,17 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative h-[400px] rounded-lg overflow-hidden bg-gradient-to-br from-secondary/20 to-primary/20">
-              {/* Placeholder for princess visit image */}
+              <img
+                src="/home/princess_visit.jpeg"
+                alt="Princess Visit"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("home.princess.title")}</h2>
               <p className="text-lg text-muted-foreground mb-6">
                 {t("home.princess.desc")}
               </p>
-              <Button size="lg" variant="outline">
-                {t("home.princess.button")}
-              </Button>
             </div>
           </div>
         </div>

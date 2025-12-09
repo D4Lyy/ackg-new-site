@@ -14,7 +14,11 @@ const Footer = () => {
           {/* Logo and Description */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary via-accent to-secondary" />
+              <img
+                src="/logo.png"
+                alt="ACKG Logo"
+                className="h-10 w-10 object-contain"
+              />
               <span className="font-bold text-lg">ACKG</span>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -69,7 +73,7 @@ const Footer = () => {
                 {t("footer.mentions")}
               </Link>
               <Link to={`/${currentLang}/a-propos`} className="block hover:text-primary transition-colors">
-                {t("footer.privacy")}
+                {t("footer.about")}
               </Link>
             </div>
           </div>

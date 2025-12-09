@@ -48,6 +48,7 @@ const App = () => (
                 <Route path="/fr/cours-de-langues" element={<LanguageCourses />} />
                 <Route path="/fr/a-propos" element={<About />} />
                 <Route path="/fr/mentions-legales" element={<LegalNotice />} />
+                <Route path="/fr/admin" element={<Admin />} />
                 
                 {/* Kurdish routes */}
                 <Route path="/ku/accueil" element={<Home />} />
@@ -56,6 +57,7 @@ const App = () => (
                 <Route path="/ku/cours-de-langues" element={<LanguageCourses />} />
                 <Route path="/ku/a-propos" element={<About />} />
                 <Route path="/ku/mentions-legales" element={<LegalNotice />} />
+                <Route path="/ku/admin" element={<Admin />} />
                 
                 {/* Admin route (no language prefix) */}
                 <Route path="/admin" element={<Admin />} />

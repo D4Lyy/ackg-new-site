@@ -72,11 +72,11 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to={`/${language}/accueil`} className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-kurdish-red via-kurdish-yellow to-kurdish-green p-1">
-              <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
-                <span className="text-xl font-bold text-primary">AK</span>
-              </div>
-            </div>
+            <img
+              src="/logo.png"
+              alt="ACKG Logo"
+              className="h-20 w-20 object-contain"
+            />
             <div className="hidden md:block">
               <div className="text-sm font-semibold text-foreground">Association Culturelle</div>
               <div className="text-xs text-muted-foreground">Kurde de Genève</div>
@@ -105,10 +105,10 @@ const Navigation = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-background">
                 <DropdownMenuItem onClick={() => handleLanguageChange("fr")}>
-                  🇫🇷 Français
+                  Français
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleLanguageChange("ku")}>
-                  🟥🟨🟩 کوردی
+                  کوردی
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
