@@ -83,7 +83,7 @@ const LanguageCourses = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative rounded-lg overflow-hidden w-[400px] mx-auto">
               <img
-                src="/language_courses/alphabet 2025_page-0001.jpg"
+                src="/language_courses/alphabet_2025_page-0001.jpg"
                 alt="Alphabet"
                 className="w-full rounded-lg h-auto"
               />
