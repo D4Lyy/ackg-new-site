@@ -37,7 +37,6 @@ const Admin = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   
   const [email, setEmail] = useState("");
@@ -71,39 +70,23 @@ const Admin = () => {
       setUser(session?.user ?? null);
       if (session?.user) {
         setTimeout(() => {
-          checkAdminRole(session.user.id);
           loadActivities();
         }, 0);
-      } else {
-        setIsAdmin(false);
-        setLoading(false);
       }
+      setLoading(false);
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkAdminRole(session.user.id);
         loadActivities();
-      } else {
-        setLoading(false);
       }
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
-
-  const checkAdminRole = async (userId: string) => {
-    try {
-      const { data } = await supabase.rpc('has_role', { _user_id: userId, _role: 'admin' });
-      setIsAdmin(data === true);
-    } catch (error) {
-      setIsAdmin(false);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const loadActivities = async () => {
     const { data } = await supabase.from('activities').select('*').order('created_at', { ascending: false });
@@ -288,36 +271,24 @@ const Admin = () => {
     );
   }
 
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen flex items-center justify-center pt-20">
-        <Card className="w-full max-w-md">
-          <CardHeader><CardTitle>Accès refusé</CardTitle></CardHeader>
-          <CardContent>
-            <p className="mb-4">Vous n'avez pas les permissions nécessaires.</p>
-            <Button onClick={() => navigate("/")} className="w-full">Retour à l'accueil</Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen pt-20 bg-muted/30">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <h1 className="text-3xl font-bold">Administration</h1>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setShowPasswordChange(!showPasswordChange)}>
-              <Settings className="w-4 h-4 mr-2" />Mot de passe
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" onClick={() => setShowPasswordChange(!showPasswordChange)}>
+              <Settings className="w-4 h-4 mr-1" />
+              <span className="hidden sm:inline">Mot de passe</span>
             </Button>
-            {isAdmin && (
-              <Button variant="outline" onClick={() => setShowUserManagement(!showUserManagement)}>
-                <UserPlus className="w-4 h-4 mr-2" />Utilisateurs
-              </Button>
-            )}
-            <Button variant="outline" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" />Déconnexion
+            <Button variant="outline" size="sm" onClick={() => setShowUserManagement(!showUserManagement)}>
+              <UserPlus className="w-4 h-4 mr-1" />
+              <span className="hidden sm:inline">Utilisateurs</span>
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mr-1" />
+              <span className="hidden sm:inline">Déconnexion</span>
             </Button>
           </div>
         </div>
@@ -341,7 +312,7 @@ const Admin = () => {
           </Card>
         )}
 
-        {showUserManagement && isAdmin && (
+        {showUserManagement && (
           <Card className="mb-8">
             <CardHeader><CardTitle>Ajouter un utilisateur admin</CardTitle></CardHeader>
             <CardContent>
