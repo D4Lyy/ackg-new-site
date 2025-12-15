@@ -81,15 +81,15 @@ const LanguageCourses = () => {
         <section className="bg-muted/30 py-10">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="relative rounded-lg overflow-hidden w-[400px] mx-auto">
+            <div className="relative rounded-lg overflow-hidden w-full max-w-[400px] mx-auto">
               <img
                 src="/language_courses/alphabet_2025_page-0001.jpg"
                 alt="Alphabet"
                 className="w-full rounded-lg h-auto"
               />
             </div>
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("courses.alphabet")}</h2>
+            <div className="text-center md:text-left">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 break-words">{t("courses.alphabet")}</h2>
               <p className="text-lg text-muted-foreground mb-6 whitespace-pre-line">
                 {t("courses.alphabet.desc")}
               </p>
