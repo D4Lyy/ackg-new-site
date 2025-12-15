@@ -13,14 +13,14 @@ const Footer = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {/* Logo and Description */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
+            <Link to={`/${currentLang}/accueil`} className="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
               <img
                 src="/logo.png"
                 alt="ACKG Logo"
                 className="h-10 w-10 object-contain"
               />
               <span className="font-bold text-lg">ACKG</span>
-            </div>
+            </Link>
             <p className="text-sm text-muted-foreground">
               {t("footer.description")}
             </p>

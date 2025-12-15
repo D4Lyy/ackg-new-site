@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { PlusCircle, Trash2, LogOut, Edit, Settings, UserPlus, Calendar as CalendarIcon, X, MoveUp, MoveDown } from "lucide-react";
+import { PlusCircle, Trash2, LogOut, Edit, Settings, UserPlus, Calendar as CalendarIcon, X, MoveUp, MoveDown, Plus, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import type { User, Session } from "@supabase/supabase-js";
+
+const SUPABASE_URL = "https://gchylpmaieucyuaufwhr.supabase.co";
 
 interface Activity {
   id: string;
@@ -63,6 +65,8 @@ const Admin = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPasswordChange, setNewPasswordChange] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [uploadingImages, setUploadingImages] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -118,21 +122,53 @@ const Admin = () => {
     navigate("/");
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) return;
-    Array.from(files).forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        if (editingActivity) {
-          setEditingActivity({ ...editingActivity, images: [...(editingActivity.images || []), base64] });
-        } else {
-          setNewActivity((prev) => ({ ...prev, images: [...prev.images, base64] }));
+    if (!files || files.length === 0) return;
+    
+    setUploadingImages(true);
+    const uploadedUrls: string[] = [];
+    
+    try {
+      for (const file of Array.from(files)) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `${fileName}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('activities_img')
+          .upload(filePath, file);
+        
+        if (uploadError) {
+          toast.error(`Erreur lors de l'upload: ${uploadError.message}`);
+          continue;
         }
-      };
-      reader.readAsDataURL(file);
-    });
+        
+        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/activities_img/${filePath}`;
+        uploadedUrls.push(publicUrl);
+      }
+      
+      if (uploadedUrls.length > 0) {
+        if (editingActivity) {
+          setEditingActivity({ 
+            ...editingActivity, 
+            images: [...(editingActivity.images || []), ...uploadedUrls] 
+          });
+        } else {
+          setNewActivity((prev) => ({ 
+            ...prev, 
+            images: [...prev.images, ...uploadedUrls] 
+          }));
+        }
+      }
+    } catch (error) {
+      toast.error("Erreur lors de l'upload des images");
+    } finally {
+      setUploadingImages(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
   };
 
   const removeImage = (index: number) => {
@@ -363,32 +399,53 @@ const Admin = () => {
               </div>
               <div>
                 <Label>Images</Label>
-                <Input type="file" multiple accept="image/*" onChange={handleImageUpload} />
-                {(editingActivity?.images || newActivity.images).length > 0 && (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                    {(editingActivity?.images || newActivity.images).map((img, idx) => (
-                      <div key={idx} className="relative group">
-                        <img src={img} alt={`Preview ${idx + 1}`} className="w-full h-32 object-cover rounded-lg" />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-1">
-                          {idx > 0 && (
-                            <Button type="button" size="icon" variant="secondary" className="h-8 w-8" onClick={() => moveImage(idx, 'up')}>
-                              <MoveUp className="h-4 w-4" />
-                            </Button>
-                          )}
-                          {idx < (editingActivity?.images || newActivity.images).length - 1 && (
-                            <Button type="button" size="icon" variant="secondary" className="h-8 w-8" onClick={() => moveImage(idx, 'down')}>
-                              <MoveDown className="h-4 w-4" />
-                            </Button>
-                          )}
-                          <Button type="button" size="icon" variant="destructive" className="h-8 w-8" onClick={() => removeImage(idx)}>
-                            <X className="h-4 w-4" />
+                <input 
+                  type="file" 
+                  ref={fileInputRef}
+                  multiple 
+                  accept="image/*" 
+                  onChange={handleImageUpload} 
+                  className="hidden"
+                  id="image-upload"
+                />
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
+                  {(editingActivity?.images || newActivity.images).map((img, idx) => (
+                    <div key={idx} className="relative group">
+                      <img src={img} alt={`Preview ${idx + 1}`} className="w-full h-32 object-cover rounded-lg" />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-1">
+                        {idx > 0 && (
+                          <Button type="button" size="icon" variant="secondary" className="h-8 w-8" onClick={() => moveImage(idx, 'up')}>
+                            <MoveUp className="h-4 w-4" />
                           </Button>
-                        </div>
-                        <div className="absolute top-1 left-1 bg-black/70 text-white text-xs px-2 py-1 rounded">{idx + 1}</div>
+                        )}
+                        {idx < (editingActivity?.images || newActivity.images).length - 1 && (
+                          <Button type="button" size="icon" variant="secondary" className="h-8 w-8" onClick={() => moveImage(idx, 'down')}>
+                            <MoveDown className="h-4 w-4" />
+                          </Button>
+                        )}
+                        <Button type="button" size="icon" variant="destructive" className="h-8 w-8" onClick={() => removeImage(idx)}>
+                          <X className="h-4 w-4" />
+                        </Button>
                       </div>
-                    ))}
-                  </div>
-                )}
+                      <div className="absolute top-1 left-1 bg-black/70 text-white text-xs px-2 py-1 rounded">{idx + 1}</div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingImages}
+                    className="w-full h-32 border-2 border-dashed border-muted-foreground/30 rounded-lg flex flex-col items-center justify-center gap-2 hover:border-primary hover:bg-muted/50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {uploadingImages ? (
+                      <Loader2 className="h-8 w-8 text-muted-foreground animate-spin" />
+                    ) : (
+                      <Plus className="h-8 w-8 text-muted-foreground" />
+                    )}
+                    <span className="text-xs text-muted-foreground">
+                      {uploadingImages ? "Upload..." : "Ajouter"}
+                    </span>
+                  </button>
+                </div>
               </div>
               <div className="flex gap-2">
                 <Button type="submit"><PlusCircle className="w-4 h-4 mr-2" />{editingActivity ? "Mettre à jour" : "Ajouter"}</Button>
