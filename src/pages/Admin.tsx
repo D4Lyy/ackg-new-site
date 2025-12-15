@@ -311,19 +311,19 @@ const Admin = () => {
   return (
     <div className="min-h-screen pt-20 bg-muted/30">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <h1 className="text-3xl font-bold">Administration</h1>
-          <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-center gap-4 mb-8">
+          <h1 className="text-3xl font-bold text-center md:text-left">Administration</h1>
+          <div className="flex flex-wrap justify-center md:justify-end gap-2">
             <Button variant="outline" size="sm" onClick={() => setShowPasswordChange(!showPasswordChange)}>
-              <Settings className="w-4 h-4 mr-1" />
+              <Settings className="w-4 h-4" />
               <span className="hidden sm:inline">Mot de passe</span>
             </Button>
             <Button variant="outline" size="sm" onClick={() => setShowUserManagement(!showUserManagement)}>
-              <UserPlus className="w-4 h-4 mr-1" />
+              <UserPlus className="w-4 h-4" />
               <span className="hidden sm:inline">Utilisateurs</span>
             </Button>
             <Button variant="outline" size="sm" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-1" />
+              <LogOut className="w-4 h-4" />
               <span className="hidden sm:inline">Déconnexion</span>
             </Button>
           </div>
