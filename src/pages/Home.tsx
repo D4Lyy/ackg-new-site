@@ -52,7 +52,7 @@ const Home = () => {
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-8">
               <Users className="w-12 h-12 mb-4 text-primary mx-auto" />
-              <h3 className="text-xl font-bold mb-3">{t("home.mission.culture.title")}</h3>
+              <h3 className="text-xl font-bold mb-3 text-center">{t("home.mission.culture.title")}</h3>
               <p className="text-muted-foreground">
                 {t("home.mission.culture.desc")}
               </p>
@@ -61,7 +61,7 @@ const Home = () => {
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-8">
               <BookOpen className="w-12 h-12 mb-4 text-accent mx-auto" />
-              <h3 className="text-xl font-bold mb-3">{t("home.mission.language.title")}</h3>
+              <h3 className="text-xl font-bold mb-3 text-center">{t("home.mission.language.title")}</h3>
               <p className="text-muted-foreground">
                 {t("home.mission.language.desc")}
               </p>
@@ -70,7 +70,7 @@ const Home = () => {
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-8">
               <Heart className="w-12 h-12 mb-4 text-secondary mx-auto" />
-              <h3 className="text-xl font-bold mb-3">{t("home.mission.activities.title")}</h3>
+              <h3 className="text-xl font-bold mb-3 text-center">{t("home.mission.activities.title")}</h3>
               <p className="text-muted-foreground">
                 {t("home.mission.activities.desc")}
               </p>
@@ -85,7 +85,7 @@ const Home = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("home.courses.title")}</h2>
-              <p className="text-lg text-muted-foreground mb-6">
+              <p className="text-lg text-muted-foreground mb-6 whitespace-pre-line">
                 {t("home.courses.desc")}
               </p>
               <Button size="lg" asChild>
@@ -104,7 +104,7 @@ const Home = () => {
       </section>
 
       {/* Support Section */}
-      <section className="container mx-auto px-4 py-20">
+      {/*<section className="container mx-auto px-4 py-20">
         <Card className="bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10">
           <CardContent className="p-12 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
@@ -118,7 +118,7 @@ const Home = () => {
             </Button>
           </CardContent>
         </Card>
-      </section>
+      </section>*/}
 
       {/* Princess Visit Section */}
       <section className="bg-muted/30 py-20">
@@ -132,10 +132,13 @@ const Home = () => {
               />
             </div>
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("home.princess.title")}</h2>
+              <h3 className="text-xl md:text-2xl font-bold mb-6">{t("home.princess.pre-title")}</h3>
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center md:text-right uppercase">{t("home.princess.title")}</h2>
               <p className="text-lg text-muted-foreground mb-6">
                 {t("home.princess.desc")}
               </p>
+              <p className="text-3xl text-right" style={{ fontFamily: "'Monotype Corsiva', cursive" }}>- {t("home.princess.signature")}</p>
+              <hr className="border-t-2 border-gray-400 mt-2 ml-auto" style={{ width: "150px" }} />
             </div>
           </div>
         </div>

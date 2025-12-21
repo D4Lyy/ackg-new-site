@@ -78,8 +78,8 @@ const Navigation = () => {
               className="h-20 w-20 object-contain"
             />
             <div className="hidden md:block">
-              <div className="text-sm font-semibold text-foreground">Association Culturelle</div>
-              <div className="text-xs text-muted-foreground">Kurde de Genève</div>
+              <div className="text-sm font-semibold text-foreground">{t("nav.name.top")}</div>
+              <div className="text-xs text-muted-foreground">{t("nav.name.bottom")}</div>
             </div>
           </Link>
 
@@ -108,7 +108,7 @@ const Navigation = () => {
                   Français
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleLanguageChange("ku")}>
-                  کوردی
+                  Kurdî
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -150,7 +150,7 @@ const Navigation = () => {
                   }}
                   className="flex-1"
                 >
-                  🇫🇷 FR
+                  FR
                 </Button>
                 <Button
                   variant={language === "ku" ? "default" : "ghost"}
@@ -160,7 +160,7 @@ const Navigation = () => {
                   }}
                   className="flex-1"
                 >
-                  🟥🟨🟩 KU
+                  KU
                 </Button>
               </div>
             </div>

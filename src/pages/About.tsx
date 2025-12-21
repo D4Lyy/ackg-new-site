@@ -15,10 +15,11 @@ const About = () => {
 
   return (
     <div className="min-h-screen">
-      <HeroSection 
-      title={t("about.title")}
-      backgroundImage="/hero/fondateurs.jpg"
-      />
+      <section className="relative h-[10vh] min-h-[150px] flex items-center justify-center overflow-hidden mt-20">
+        <h1 className="relative z-10 text-4xl md:text-6xl font-bold text-black mt-8">
+          {t("about.title")}
+        </h1>
+      </section>
 
       <section className="container mx-auto px-4 py-16">
         {/* Mission Statement */}
@@ -34,33 +35,31 @@ const About = () => {
         {/* Values */}
         <div className="mb-16">
           <h2 className="text-3xl font-bold mb-8 text-center">{t("about.values.title")}</h2>
-          <div className="grid md:grid-cols-3 gap-10">
-            <Card>
-              <CardContent className="p-6">
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-8">
                 <Heart className="w-12 h-12 mb-4 text-primary mx-auto" />
-                <h3 className="font-semibold mb-3">{t("about.values.culture")}</h3>
-                <p className="text-sm text-muted-foreground">
-                  Maintenir vivantes les traditions, la langue et les valeurs kurdes pour les générations futures
+                <h3 className="text-xl font-bold mb-3">{t("about.values.culture")}</h3>
+                <p className="text-muted-foreground">
+                  {t("about.values.culture.desc")}
                 </p>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardContent className="p-6">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-8">
                 <BookOpen className="w-12 h-12 mb-4 text-accent mx-auto" />
-                <h3 className="font-semibold mb-3">{t("about.values.education")}</h3>
-                <p className="text-sm text-muted-foreground">
-                  Promouvoir les échanges culturels entre la communauté kurde et la société suisse
+                <h3 className="text-xl font-bold mb-3">{t("about.values.education")}</h3>
+                <p className="text-muted-foreground">
+                  {t("about.values.education.desc")}
                 </p>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardContent className="p-6">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-8">
                 <Handshake className="w-12 h-12 mb-4 text-secondary mx-auto" />
-                <h3 className="font-semibold mb-3">{t("about.values.solidarity")}</h3>
-                <p className="text-sm text-muted-foreground">
-                  Accompagner l'intégration des Kurdes en Suisse tout en préservant leur identité culturelle
+                <h3 className="text-xl font-bold mb-3">{t("about.values.solidarity")}</h3>
+                <p className="text-muted-foreground">
+                  {t("about.values.solidarity.desc")}
                 </p>
               </CardContent>
             </Card>

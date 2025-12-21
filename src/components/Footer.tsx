@@ -80,7 +80,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>© 2024 Association Culturelle Kurde de Genève. {t("footer.copyright")}</p>
+          <p>© 2025 {t("footer.association")}. {t("footer.copyright")}</p>
         </div>
       </div>
     </footer>
