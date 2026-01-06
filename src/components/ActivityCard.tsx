@@ -15,11 +15,12 @@ interface ActivityCardPropsExtended extends ActivityCardProps {
 }
 
 const ActivityCard = ({ title, date, location, image, images, slug }: ActivityCardPropsExtended) => {
-  const { language } = useLanguage();
+  const { t } = useLanguage();
+  const language = useLanguage().language;
   const displayImage = images && images.length > 0 ? images[0] : image;
 
   return (
-    <Link to={`/${language}/activite/${slug}`}>
+    <Link to={`/${language}/activity/${slug}`}>
       <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
         <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 relative overflow-hidden">
           {displayImage && (
@@ -29,8 +30,8 @@ const ActivityCard = ({ title, date, location, image, images, slug }: ActivityCa
         <CardContent className="p-4">
           <h3 className="font-semibold text-lg mb-2 line-clamp-2">{title}</h3>
           <div className="text-sm text-muted-foreground space-y-1">
-            <p>Date de l'activité: {date}</p>
-            <p>Lieu de l'activité: {location}</p>
+            <p>{t("activities.date")} {date}</p>
+            <p>{t("activities.location")} {location}</p>
           </div>
         </CardContent>
       </Card>

@@ -1,4 +1,3 @@
-import HeroSection from "@/components/HeroSection";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Building2, Mail, Phone, MapPin, Server } from "lucide-react";
@@ -8,7 +7,11 @@ const LegalNotice = () => {
 
   return (
     <div className="min-h-screen">
-      <HeroSection title={t("legal.title")} />
+      <section className="relative h-[10vh] min-h-[150px] flex items-center justify-center overflow-hidden mt-20">
+        <h1 className="relative z-10 text-4xl md:text-6xl font-bold text-black mt-8">
+          {t("legal.title")}
+        </h1>
+      </section>
 
       <section className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto space-y-8">
@@ -28,14 +31,14 @@ const LegalNotice = () => {
                   <MapPin className="w-4 h-4 text-muted-foreground mt-1" />
                   <div>
                     <p className="font-semibold">{t("legal.association.address")}</p>
-                    <p className="text-muted-foreground">Genève, Suisse</p>
+                    <p className="text-muted-foreground">Avenue Edmond-Vaucher 19, 1219 Châtelaine, Genève, Suisse</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <span className="font-semibold">{t("legal.association.phone")}: </span>
-                    <span className="text-muted-foreground">+41 76 XXX XX XX</span>
+                    <span className="text-muted-foreground">+41 77 996 73 63</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -58,22 +61,6 @@ const LegalNotice = () => {
               <p className="text-muted-foreground">
                 Association Culturelle Kurde de Genève
               </p>
-            </CardContent>
-          </Card>
-
-          {/* Hosting */}
-          <Card>
-            <CardContent className="p-8">
-              <div className="flex items-start gap-3 mb-4">
-                <Server className="w-6 h-6 text-primary mt-1" />
-                <h2 className="text-2xl font-bold">{t("legal.hosting.title")}</h2>
-              </div>
-              <div className="ml-9">
-                <p className="font-semibold mb-2">{t("legal.hosting.provider")}</p>
-                <p className="text-muted-foreground">Supabase Inc.</p>
-                <p className="text-muted-foreground">970 Toa Payoh North, #07-04</p>
-                <p className="text-muted-foreground">Singapore 318992</p>
-              </div>
             </CardContent>
           </Card>
 

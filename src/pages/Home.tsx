@@ -46,41 +46,43 @@ const Home = () => {
       />
 
       {/* Mission Section */}
-      <section className="container mx-auto px-4 py-20">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">{t("home.mission.title")}</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-8">
-              <Users className="w-12 h-12 mb-4 text-primary mx-auto" />
-              <h3 className="text-xl font-bold mb-3 text-center">{t("home.mission.culture.title")}</h3>
-              <p className="text-muted-foreground">
-                {t("home.mission.culture.desc")}
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-8">
-              <BookOpen className="w-12 h-12 mb-4 text-accent mx-auto" />
-              <h3 className="text-xl font-bold mb-3 text-center">{t("home.mission.language.title")}</h3>
-              <p className="text-muted-foreground">
-                {t("home.mission.language.desc")}
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-8">
-              <Heart className="w-12 h-12 mb-4 text-secondary mx-auto" />
-              <h3 className="text-xl font-bold mb-3 text-center">{t("home.mission.activities.title")}</h3>
-              <p className="text-muted-foreground">
-                {t("home.mission.activities.desc")}
-              </p>
-            </CardContent>
-          </Card>
+      <section className="bg-muted/30">
+        <div className="container mx-auto px-4 py-20">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">{t("home.mission.title")}</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-8">
+                <Users className="w-12 h-12 mb-4 text-primary mx-auto" />
+                <h3 className="text-xl font-bold mb-3 text-center">{t("home.mission.culture.title")}</h3>
+                <p className="text-muted-foreground">
+                  {t("home.mission.culture.desc")}
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-8">
+                <BookOpen className="w-12 h-12 mb-4 text-accent mx-auto" />
+                <h3 className="text-xl font-bold mb-3 text-center">{t("home.mission.language.title")}</h3>
+                <p className="text-muted-foreground">
+                  {t("home.mission.language.desc")}
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-8">
+                <Heart className="w-12 h-12 mb-4 text-secondary mx-auto" />
+                <h3 className="text-xl font-bold mb-3 text-center">{t("home.mission.activities.title")}</h3>
+                <p className="text-muted-foreground">
+                  {t("home.mission.activities.desc")}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
       {/* Language Courses Section */}
-      <section className="bg-muted/30 py-20">
+      <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -121,9 +123,10 @@ const Home = () => {
       </section>*/}
 
       {/* Princess Visit Section */}
-      <section className="bg-muted/30 py-20">
+      <section className="bg-muted/30 py-20 bg-[url('/bg/pattern.png')] bg-repeat bg-muted/100">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          {/*grid put second block on top when screen is small*/}
+          <div className="grid md:grid-cols-2 gap-12 items-center md:flex-row-reverse">
             <div className="relative h-[400px] rounded-lg overflow-hidden bg-gradient-to-br from-secondary/20 to-primary/20">
               <img
                 src="/home/princess_visit.jpeg"

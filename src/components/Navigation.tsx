@@ -48,10 +48,10 @@ const Navigation = () => {
   }, [location.pathname]);
 
   const links = [
-    { href: `/${language}/accueil`, label: t("nav.home") },
-    { href: `/${language}/activites`, label: t("nav.activities") },
-    { href: `/${language}/cours-de-langues`, label: t("nav.courses") },
-    { href: `/${language}/a-propos`, label: t("nav.about") },
+    { href: `/${language}/home`, label: t("nav.home") },
+    { href: `/${language}/activities`, label: t("nav.activities") },
+    { href: `/${language}/language-courses`, label: t("nav.courses") },
+    { href: `/${language}/about`, label: t("nav.about") },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -59,7 +59,7 @@ const Navigation = () => {
   const handleLanguageChange = (newLang: 'fr' | 'ku') => {
     // Get current path without language prefix
     const pathParts = location.pathname.split('/');
-    const currentPath = pathParts.slice(2).join('/') || 'accueil';
+    const currentPath = pathParts.slice(2).join('/') || 'home';
     
     // Navigate to new language path
     navigate(`/${newLang}/${currentPath}`);
@@ -71,7 +71,7 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to={`/${language}/accueil`} className="flex items-center gap-3">
+          <Link to={`/${language}/home`} className="flex items-center gap-3">
             <img
               src="/logo.png"
               alt="ACKG Logo"
@@ -150,7 +150,7 @@ const Navigation = () => {
                   }}
                   className="flex-1"
                 >
-                  FR
+                  Français
                 </Button>
                 <Button
                   variant={language === "ku" ? "default" : "ghost"}
@@ -160,7 +160,7 @@ const Navigation = () => {
                   }}
                   className="flex-1"
                 >
-                  KU
+                  Kurdî
                 </Button>
               </div>
             </div>

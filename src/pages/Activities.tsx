@@ -96,7 +96,7 @@ const Activities = () => {
 
   return (
     <div className="min-h-screen">
-      <section className="relative h-[10vh] min-h-[150px] flex items-center justify-center overflow-hidden mt-20">
+      <section className="relative h-[10vh] min-h-[150px] flex items-center justify-center overflow-hidden mt-20 bg-repeat pb-10">
         <h1 className="relative z-10 text-4xl md:text-6xl font-bold text-black mt-8">
           {t("activities.title")}
         </h1>

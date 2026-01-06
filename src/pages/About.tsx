@@ -15,7 +15,7 @@ const About = () => {
 
   return (
     <div className="min-h-screen">
-      <section className="relative h-[10vh] min-h-[150px] flex items-center justify-center overflow-hidden mt-20">
+      <section className="relative h-[10vh] min-h-[150px] flex items-center justify-center overflow-hidden mt-20 bg-muted/100 bg-[url('/bg/pattern.png')] bg-repeat pb-10">
         <h1 className="relative z-10 text-4xl md:text-6xl font-bold text-black mt-8">
           {t("about.title")}
         </h1>
@@ -97,23 +97,11 @@ const About = () => {
         {/* Contact Section */}
         <Card className="mt-16 bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10">
           <CardContent className="p-8">
-            <h3 className="text-2xl font-bold mb-6 text-center">{t("about.contact.title")}</h3>
-            <div className="grid md:grid-cols-2 gap-8 items-start">
-              {/* Facebook Embed */}
-              <div className="flex justify-center w-full">
-                <iframe
-                  src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fpeople%2FKomela-Kult%C3%BBr%C3%AA-Kurd%C3%AE-li-Cin%C3%AAv%C3%AA%2F100063537401743&tabs&width=340&height=300&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId"
-                  className="w-full max-w-[340px]"
-                  height="300"
-                  style={{ border: 'none', overflow: 'hidden' }}
-                  allowFullScreen={true}
-                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                ></iframe>
-              </div>
-              
+            <h3 className="text-3xl font-bold mb-8 text-center">{t("about.contact.title")}</h3>
+            <div className="items-center justify-center flex flex-col gap-4 md:gap-8 md:flex-row">              
               {/* Contact Info */}
-              <div className="space-y-3 text-muted-foreground">
-                <p className="font-semibold text-foreground break-words">Association Culturelle Kurde de Genève</p>
+              <div className="space-y-3 text-muted-foreground px-4 text-xl text-left md:px-0 md:text-xl">
+                <p className="font-semibold text-foreground break-words text-center mb-6">Association Culturelle Kurde de Genève</p>
                 <p className="break-words"><strong>{t("about.contact.address")}:</strong> Genève, Suisse</p>
                 <p className="break-words">
                   <strong>{t("about.contact.phone")}:</strong>{" "}

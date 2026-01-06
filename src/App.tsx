@@ -42,21 +42,21 @@ const App = () => (
             <main className="flex-grow">
               <Routes>
                 {/* French routes */}
-                <Route path="/fr/accueil" element={<Home />} />
-                <Route path="/fr/activites" element={<Activities />} />
-                <Route path="/fr/activite/:slug" element={<ActivityDetail />} />
-                <Route path="/fr/cours-de-langues" element={<LanguageCourses />} />
-                <Route path="/fr/a-propos" element={<About />} />
-                <Route path="/fr/mentions-legales" element={<LegalNotice />} />
+                <Route path="/fr/home" element={<Home />} />
+                <Route path="/fr/activities" element={<Activities />} />
+                <Route path="/fr/activity/:slug" element={<ActivityDetail />} />
+                <Route path="/fr/language-courses" element={<LanguageCourses />} />
+                <Route path="/fr/about" element={<About />} />
+                <Route path="/fr/legal-notice" element={<LegalNotice />} />
                 <Route path="/fr/admin" element={<Admin />} />
                 
                 {/* Kurdish routes */}
-                <Route path="/ku/accueil" element={<Home />} />
-                <Route path="/ku/activites" element={<Activities />} />
-                <Route path="/ku/activite/:slug" element={<ActivityDetail />} />
-                <Route path="/ku/cours-de-langues" element={<LanguageCourses />} />
-                <Route path="/ku/a-propos" element={<About />} />
-                <Route path="/ku/mentions-legales" element={<LegalNotice />} />
+                <Route path="/ku/home" element={<Home />} />
+                <Route path="/ku/activities" element={<Activities />} />
+                <Route path="/ku/activity/:slug" element={<ActivityDetail />} />
+                <Route path="/ku/language-courses" element={<LanguageCourses />} />
+                <Route path="/ku/about" element={<About />} />
+                <Route path="/ku/legal-notice" element={<LegalNotice />} />
                 <Route path="/ku/admin" element={<Admin />} />
                 
                 {/* Admin route (no language prefix) */}

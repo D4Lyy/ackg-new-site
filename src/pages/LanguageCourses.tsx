@@ -2,6 +2,7 @@ import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import {
   Carousel,
   CarouselContent,
@@ -100,8 +101,8 @@ const LanguageCourses = () => {
 
       <section className="container mx-auto px-4 py-10">
         {/* Course Info */}
+        <h3 className="text-2xl font-bold mb-6">{t("courses.info.title")}</h3>
         <div className="mb-16">
-          <h3 className="text-2xl font-bold mb-6">{t("courses.info.title")}</h3>
           <Card>
             <CardContent className="p-8">
               <div className="space-y-4">
@@ -109,14 +110,14 @@ const LanguageCourses = () => {
                   <h4 className="font-semibold mb-2">{t("courses.info.children")}</h4>
                   <p className="text-muted-foreground">{t("courses.schedule.children")}</p>
                 </div>
-                <div>
+                {/*<div>
                   <h4 className="font-semibold mb-2">{t("courses.info.teens")}</h4>
                   <p className="text-muted-foreground">{t("courses.schedule.teens")}</p>
                 </div>
                 <div>
                   <h4 className="font-semibold mb-2">{t("courses.info.adults")}</h4>
                   <p className="text-muted-foreground">{t("courses.schedule.adults")}</p>
-                </div>
+                </div>*/}
               </div>
             </CardContent>
           </Card>
@@ -172,10 +173,12 @@ const LanguageCourses = () => {
               {t("courses.register")}
             </h3>
             <p className="text-muted-foreground mb-6">
-              Les places sont limitées. Rejoignez notre communauté d'apprentissage!
+              {t("courses.register.desc")}
             </p>
-            <Button size="lg" className="font-semibold">
-              Contactez-nous
+            <Button size="lg" className="font-semibold" asChild>
+              <Link to={`https://edu.ge.ch/enseignement/accueil-des-eleves-allophones/ressource/langues-et-cultures-dorigine-lco-3024`} target="_blank" rel="noopener noreferrer">
+                {t("courses.register.button")}
+              </Link>
             </Button>
           </CardContent>
         </Card>

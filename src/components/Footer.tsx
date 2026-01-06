@@ -13,7 +13,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {/* Logo and Description */}
           <div>
-            <Link to={`/${currentLang}/accueil`} className="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
+            <Link to={`/${currentLang}/home`} className="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
               <img
                 src="/logo.png"
                 alt="ACKG Logo"
@@ -69,10 +69,10 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold mb-4">{t("footer.legal")}</h3>
             <div className="space-y-2 text-sm">
-              <Link to={`/${currentLang}/mentions-legales`} className="block hover:text-primary transition-colors">
+              <Link to={`/${currentLang}/legal-notice`} className="block hover:text-primary transition-colors">
                 {t("footer.mentions")}
               </Link>
-              <Link to={`/${currentLang}/a-propos`} className="block hover:text-primary transition-colors">
+              <Link to={`/${currentLang}/about`} className="block hover:text-primary transition-colors">
                 {t("footer.about")}
               </Link>
             </div>
