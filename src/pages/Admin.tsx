@@ -26,6 +26,11 @@ interface Activity {
   slug?: string;
 }
 
+interface PendingImage {
+  file: File;
+  previewUrl: string;
+}
+
 const generateSlug = () => {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
   let slug = '';
@@ -33,6 +38,11 @@ const generateSlug = () => {
     slug += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return slug;
+};
+
+const getFilePathFromUrl = (url: string): string | null => {
+  const match = url.match(/activities_img\/(.+)$/);
+  return match ? match[1] : null;
 };
 
 const Admin = () => {
@@ -48,6 +58,7 @@ const Admin = () => {
   
   const [activities, setActivities] = useState<Activity[]>([]);
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
+  const [originalActivityImages, setOriginalActivityImages] = useState<string[]>([]);
   const [newActivity, setNewActivity] = useState({
     title: "",
     date: "",
@@ -56,6 +67,9 @@ const Admin = () => {
     images: [] as string[],
   });
   const [activityDate, setActivityDate] = useState<Date>();
+  
+  const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
+  const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
   
   const [showUserManagement, setShowUserManagement] = useState(false);
   const [newUserEmail, setNewUserEmail] = useState("");
@@ -122,78 +136,151 @@ const Admin = () => {
     navigate("/");
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
     
-    setUploadingImages(true);
+    const newPendingImages: PendingImage[] = Array.from(files).map(file => ({
+      file,
+      previewUrl: URL.createObjectURL(file)
+    }));
+    
+    setPendingImages(prev => [...prev, ...newPendingImages]);
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const uploadPendingImages = async (): Promise<string[]> => {
     const uploadedUrls: string[] = [];
     
-    try {
-      for (const file of Array.from(files)) {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-        const filePath = `${fileName}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('activities_img')
-          .upload(filePath, file);
-        
-        if (uploadError) {
-          toast.error(`Erreur lors de l'upload: ${uploadError.message}`);
-          continue;
-        }
-        
-        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/activities_img/${filePath}`;
-        uploadedUrls.push(publicUrl);
+    for (const pending of pendingImages) {
+      const fileExt = pending.file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `${fileName}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('activities_img')
+        .upload(filePath, pending.file);
+      
+      if (uploadError) {
+        toast.error(`Erreur lors de l'upload: ${uploadError.message}`);
+        continue;
       }
       
-      if (uploadedUrls.length > 0) {
-        if (editingActivity) {
-          setEditingActivity({ 
-            ...editingActivity, 
-            images: [...(editingActivity.images || []), ...uploadedUrls] 
-          });
-        } else {
-          setNewActivity((prev) => ({ 
-            ...prev, 
-            images: [...prev.images, ...uploadedUrls] 
-          }));
-        }
-      }
-    } catch (error) {
-      toast.error("Erreur lors de l'upload des images");
-    } finally {
-      setUploadingImages(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/activities_img/${filePath}`;
+      uploadedUrls.push(publicUrl);
+    }
+    
+    return uploadedUrls;
+  };
+
+  const deleteImagesFromBucket = async (urls: string[]) => {
+    const filePaths = urls.map(getFilePathFromUrl).filter((p): p is string => p !== null);
+    
+    if (filePaths.length > 0) {
+      const { error } = await supabase.storage
+        .from('activities_img')
+        .remove(filePaths);
+      
+      if (error) {
+        console.error('Error deleting images:', error);
       }
     }
   };
 
   const removeImage = (index: number) => {
-    if (editingActivity) {
-      const newImages = [...(editingActivity.images || [])];
+    const existingImages = editingActivity ? (editingActivity.images || []) : newActivity.images;
+    const totalExisting = existingImages.length;
+    
+    if (index < totalExisting) {
+      // Removing an existing image (already in bucket)
+      const imageUrl = existingImages[index];
+      
+      // Check if it was an original image (needs to be deleted from bucket on save)
+      if (editingActivity && originalActivityImages.includes(imageUrl)) {
+        setImagesToDelete(prev => [...prev, imageUrl]);
+      }
+      
+      const newImages = [...existingImages];
       newImages.splice(index, 1);
-      setEditingActivity({ ...editingActivity, images: newImages });
+      
+      if (editingActivity) {
+        setEditingActivity({ ...editingActivity, images: newImages });
+      } else {
+        // For new activity, if image was somehow already uploaded, mark for deletion
+        if (imageUrl.includes('activities_img')) {
+          setImagesToDelete(prev => [...prev, imageUrl]);
+        }
+        setNewActivity({ ...newActivity, images: newImages });
+      }
     } else {
-      const newImages = [...newActivity.images];
-      newImages.splice(index, 1);
-      setNewActivity({ ...newActivity, images: newImages });
+      // Removing a pending image (not yet uploaded)
+      const pendingIndex = index - totalExisting;
+      const pending = pendingImages[pendingIndex];
+      if (pending) {
+        URL.revokeObjectURL(pending.previewUrl);
+      }
+      setPendingImages(prev => prev.filter((_, i) => i !== pendingIndex));
     }
   };
 
   const moveImage = (index: number, direction: 'up' | 'down') => {
-    const images = editingActivity ? (editingActivity.images || []) : newActivity.images;
-    const newImages = [...images];
+    const existingImages = editingActivity ? (editingActivity.images || []) : newActivity.images;
+    const allImages = [...existingImages, ...pendingImages.map(p => p.previewUrl)];
+    const totalImages = allImages.length;
+    
     const newIndex = direction === 'up' ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= newImages.length) return;
-    [newImages[index], newImages[newIndex]] = [newImages[newIndex], newImages[index]];
-    if (editingActivity) {
-      setEditingActivity({ ...editingActivity, images: newImages });
+    if (newIndex < 0 || newIndex >= totalImages) return;
+    
+    const totalExisting = existingImages.length;
+    
+    // Determine source and target types
+    const sourceIsPending = index >= totalExisting;
+    const targetIsPending = newIndex >= totalExisting;
+    
+    if (sourceIsPending && targetIsPending) {
+      // Both are pending images
+      const newPending = [...pendingImages];
+      const sourceIdx = index - totalExisting;
+      const targetIdx = newIndex - totalExisting;
+      [newPending[sourceIdx], newPending[targetIdx]] = [newPending[targetIdx], newPending[sourceIdx]];
+      setPendingImages(newPending);
+    } else if (!sourceIsPending && !targetIsPending) {
+      // Both are existing images
+      const newImages = [...existingImages];
+      [newImages[index], newImages[newIndex]] = [newImages[newIndex], newImages[index]];
+      if (editingActivity) {
+        setEditingActivity({ ...editingActivity, images: newImages });
+      } else {
+        setNewActivity({ ...newActivity, images: newImages });
+      }
     } else {
-      setNewActivity({ ...newActivity, images: newImages });
+      // Swapping between existing and pending - convert pending to existing position
+      // This is complex, so we'll just prevent it for simplicity
+      toast.error("Impossible de déplacer entre images existantes et nouvelles");
     }
+  };
+
+  const startEditingActivity = (activity: Activity) => {
+    setEditingActivity(activity);
+    setOriginalActivityImages([...(activity.images || [])]);
+    setPendingImages([]);
+    setImagesToDelete([]);
+    if (activity.date) {
+      setActivityDate(new Date(activity.date));
+    }
+  };
+
+  const cancelEditing = () => {
+    // Clean up pending image previews
+    pendingImages.forEach(p => URL.revokeObjectURL(p.previewUrl));
+    setPendingImages([]);
+    setImagesToDelete([]);
+    setOriginalActivityImages([]);
+    setEditingActivity(null);
+    setActivityDate(undefined);
   };
 
   const handleAddActivity = async (e: React.FormEvent) => {
@@ -202,32 +289,94 @@ const Admin = () => {
       toast.error("Veuillez remplir tous les champs");
       return;
     }
-    const dateStr = activityDate ? format(activityDate, "yyyy-MM-dd") : new Date().toISOString().split('T')[0];
-    const slug = generateSlug();
-    const { error } = await supabase.from('activities').insert([{ ...newActivity, date: dateStr, slug }]);
-    if (error) toast.error(error.message);
-    else {
-      setNewActivity({ title: "", date: "", location: "", content: "", images: [] });
-      setActivityDate(undefined);
-      loadActivities();
-      toast.success("Activité ajoutée!");
+    
+    setUploadingImages(true);
+    
+    try {
+      // Upload pending images
+      const uploadedUrls = await uploadPendingImages();
+      const allImages = [...newActivity.images, ...uploadedUrls];
+      
+      // Delete any images that were removed
+      if (imagesToDelete.length > 0) {
+        await deleteImagesFromBucket(imagesToDelete);
+      }
+      
+      const dateStr = activityDate ? format(activityDate, "yyyy-MM-dd") : new Date().toISOString().split('T')[0];
+      const slug = generateSlug();
+      
+      const { error } = await supabase.from('activities').insert([{ 
+        ...newActivity, 
+        images: allImages,
+        date: dateStr, 
+        slug 
+      }]);
+      
+      if (error) {
+        toast.error(error.message);
+      } else {
+        // Clean up
+        pendingImages.forEach(p => URL.revokeObjectURL(p.previewUrl));
+        setPendingImages([]);
+        setImagesToDelete([]);
+        setNewActivity({ title: "", date: "", location: "", content: "", images: [] });
+        setActivityDate(undefined);
+        loadActivities();
+        toast.success("Activité ajoutée!");
+      }
+    } finally {
+      setUploadingImages(false);
     }
   };
 
   const handleUpdateActivity = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingActivity) return;
-    const { error } = await supabase.from('activities').update(editingActivity).eq('id', editingActivity.id);
-    if (error) toast.error(error.message);
-    else {
-      setEditingActivity(null);
-      loadActivities();
-      toast.success("Activité mise à jour!");
+    
+    setUploadingImages(true);
+    
+    try {
+      // Upload pending images
+      const uploadedUrls = await uploadPendingImages();
+      const allImages = [...(editingActivity.images || []), ...uploadedUrls];
+      
+      // Delete removed images from bucket
+      if (imagesToDelete.length > 0) {
+        await deleteImagesFromBucket(imagesToDelete);
+      }
+      
+      const { error } = await supabase.from('activities').update({
+        ...editingActivity,
+        images: allImages
+      }).eq('id', editingActivity.id);
+      
+      if (error) {
+        toast.error(error.message);
+      } else {
+        // Clean up
+        pendingImages.forEach(p => URL.revokeObjectURL(p.previewUrl));
+        setPendingImages([]);
+        setImagesToDelete([]);
+        setOriginalActivityImages([]);
+        setEditingActivity(null);
+        setActivityDate(undefined);
+        loadActivities();
+        toast.success("Activité mise à jour!");
+      }
+    } finally {
+      setUploadingImages(false);
     }
   };
 
   const handleDeleteActivity = async (id: string) => {
     if (!confirm("Supprimer cette activité ?")) return;
+    
+    // Find the activity and delete its images from bucket
+    const activity = activities.find(a => a.id === id);
+    if (activity?.images && activity.images.length > 0) {
+      await deleteImagesFromBucket(activity.images);
+    }
+    
     await supabase.from('activities').delete().eq('id', id);
     loadActivities();
     toast.success("Activité supprimée");
@@ -404,13 +553,14 @@ const Admin = () => {
                   ref={fileInputRef}
                   multiple 
                   accept="image/*" 
-                  onChange={handleImageUpload} 
+                  onChange={handleImageSelect} 
                   className="hidden"
                   id="image-upload"
                 />
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
+                  {/* Existing uploaded images */}
                   {(editingActivity?.images || newActivity.images).map((img, idx) => (
-                    <div key={idx} className="relative group">
+                    <div key={`existing-${idx}`} className="relative group">
                       <img src={img} alt={`Preview ${idx + 1}`} className="w-full h-32 object-cover rounded-lg" />
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-1">
                         {idx > 0 && (
@@ -430,6 +580,32 @@ const Admin = () => {
                       <div className="absolute top-1 left-1 bg-black/70 text-white text-xs px-2 py-1 rounded">{idx + 1}</div>
                     </div>
                   ))}
+                  {/* Pending images (not yet uploaded) */}
+                  {pendingImages.map((pending, idx) => {
+                    const totalIdx = (editingActivity?.images || newActivity.images).length + idx;
+                    return (
+                      <div key={`pending-${idx}`} className="relative group">
+                        <img src={pending.previewUrl} alt={`Pending ${idx + 1}`} className="w-full h-32 object-cover rounded-lg border-2 border-dashed border-primary" />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-1">
+                          {totalIdx > 0 && (
+                            <Button type="button" size="icon" variant="secondary" className="h-8 w-8" onClick={() => moveImage(totalIdx, 'up')}>
+                              <MoveUp className="h-4 w-4" />
+                            </Button>
+                          )}
+                          {idx < pendingImages.length - 1 && (
+                            <Button type="button" size="icon" variant="secondary" className="h-8 w-8" onClick={() => moveImage(totalIdx, 'down')}>
+                              <MoveDown className="h-4 w-4" />
+                            </Button>
+                          )}
+                          <Button type="button" size="icon" variant="destructive" className="h-8 w-8" onClick={() => removeImage(totalIdx)}>
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-xs px-2 py-1 rounded">{totalIdx + 1}</div>
+                        <div className="absolute bottom-1 right-1 bg-primary/90 text-primary-foreground text-xs px-2 py-1 rounded">Nouveau</div>
+                      </div>
+                    );
+                  })}
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
@@ -448,8 +624,11 @@ const Admin = () => {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button type="submit"><PlusCircle className="w-4 h-4 mr-2" />{editingActivity ? "Mettre à jour" : "Ajouter"}</Button>
-                {editingActivity && <Button type="button" variant="outline" onClick={() => setEditingActivity(null)}>Annuler</Button>}
+                <Button type="submit" disabled={uploadingImages}>
+                  {uploadingImages ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <PlusCircle className="w-4 h-4 mr-2" />}
+                  {editingActivity ? "Mettre à jour" : "Ajouter"}
+                </Button>
+                {editingActivity && <Button type="button" variant="outline" onClick={cancelEditing}>Annuler</Button>}
               </div>
             </form>
           </CardContent>
@@ -468,7 +647,7 @@ const Admin = () => {
                         <p className="text-sm text-muted-foreground">{activity.date} - {activity.location}</p>
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => setEditingActivity(activity)}><Edit className="w-4 h-4" /></Button>
+                        <Button variant="ghost" size="icon" onClick={() => startEditingActivity(activity)}><Edit className="w-4 h-4" /></Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDeleteActivity(activity.id)}><Trash2 className="w-4 h-4" /></Button>
                       </div>
                     </div>
