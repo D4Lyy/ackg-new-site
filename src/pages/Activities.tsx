@@ -155,7 +155,7 @@ const Activities = () => {
         {loading ? (
           <Card>
             <CardContent className="p-12 text-center">
-              <p className="text-muted-foreground">Chargement des activités...</p>
+              <p className="text-muted-foreground">{t("admin.activity.loading")}</p>
             </CardContent>
           </Card>
         ) : filteredActivities.length > 0 ? (

@@ -116,7 +116,9 @@ const Home = () => {
               {t("home.support.desc")}
             </p>
             <Button size="lg" variant="default">
-              {t("home.support.button")}
+              <Link to={`/become-member.pdf`} target="_blank" rel="noopener noreferrer">
+                {t("home.support.button")}
+              </Link>
             </Button>
           </CardContent>
         </Card>

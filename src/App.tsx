@@ -63,13 +63,17 @@ const App = () => (
                 <Route path="/admin" element={<Admin />} />
                 
                 {/* Root redirect to French home */}
-                <Route path="/" element={<Navigate to="/fr/accueil" replace />} />
+                <Route path="/" element={<Navigate to="/fr/home" replace />} />
+
+                {/* Language root redirects */}
+                <Route path="/fr" element={<Navigate to="/fr/home" replace />} />
+                <Route path="/ku" element={<Navigate to="/ku/home" replace />} />
                 
                 {/* Legacy redirects */}
-                <Route path="/activites" element={<Navigate to="/fr/activites" replace />} />
-                <Route path="/activite/:slug" element={<Navigate to="/fr/activite/:slug" replace />} />
-                <Route path="/cours-de-langues" element={<Navigate to="/fr/cours-de-langues" replace />} />
-                <Route path="/a-propos" element={<Navigate to="/fr/a-propos" replace />} />
+                <Route path="/activites" element={<Navigate to="/fr/activities" replace />} />
+                <Route path="/activite/:slug" element={<Navigate to="/fr/activity/:slug" replace />} />
+                <Route path="/cours-de-langues" element={<Navigate to="/fr/language-courses" replace />} />
+                <Route path="/a-propos" element={<Navigate to="/fr/about" replace />} />
                 
                 {/* 404 */}
                 <Route path="*" element={<NotFound />} />
