@@ -69,7 +69,7 @@ const ActivityDetail = () => {
 
   const handleShareTwitter = () => {
     const url = encodeURIComponent(window.location.href);
-    const text = encodeURIComponent(activity?.title || '');
+    const text = encodeURIComponent(activity?.title || (currentLang === "ku" ? "Vê çalakiyê bibînin : " : "Découvrez cette activité : "));
     window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
   };
 
