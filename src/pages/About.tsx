@@ -102,7 +102,9 @@ const About = () => {
               {/* Contact Info */}
               <div className="space-y-3 text-muted-foreground px-4 text-xl text-left md:px-0 md:text-xl">
                 <p className="font-semibold text-foreground break-words text-center mb-6">Association Culturelle Kurde de Genève</p>
-                <p className="break-words"><strong>{t("about.contact.address")}:</strong> Genève, Suisse</p>
+                <p className="break-words"><strong>{t("about.contact.address")}:</strong>{" "}
+                  Avenue Edmond-Vaucher 19, 1219 Châtelaine, Genève, Suisse
+                </p>
                 <p className="break-words">
                   <strong>{t("about.contact.phone")}:</strong>{" "}
                   <a href="tel:+41779967363" className="hover:text-primary transition-colors break-all">

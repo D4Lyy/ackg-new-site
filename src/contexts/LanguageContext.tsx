@@ -81,9 +81,12 @@ const translations: Record<Language, Record<string, string>> = {
     "courses.cards.duration.desc": "Sessions intensives et efficaces",
     "courses.cards.location.title": "École Avanchet-Jura",
     "courses.cards.location.desc": "Facilement accessible en transport",
-    "courses.register": "Plus d'informations",
-    "courses.register.desc": "Pour plus d'informations sur les cours ou pour inscrire vos enfants, veuillez nous contacter par email ou par téléphone. Vous pouvez également visiter le site officiel de l'enseignement des langues maternelles à Genève (LCO).",
-    "courses.register.button": "Site LCO",
+    "courses.more": "Plus d'informations",
+    "courses.more.desc": "Pour plus d'informations sur les cours vous pouvez également visiter le site officiel de l'enseignement des langues maternelles à Genève (LCO).",
+    "courses.more.button": "Site LCO",
+    "courses.enroll.title": "Inscription aux cours",
+    "courses.enroll.desc": "Inscrivez vos enfants à nos cours de langue kurde pour les aider à préserver leur langue maternelle et leur culture. Pour vous inscrire, veuillez télécharger le formulaire d'inscription ci-dessous, le remplir et nous l'envoyer par email.",
+    "courses.enroll.button": "Formulaire d'inscription",
     
     // About
     "about.title": "À propos de l'ACKG",
@@ -251,9 +254,12 @@ const translations: Record<Language, Record<string, string>> = {
     "courses.cards.duration.desc": "Danişînên giran û bi bandor",
     "courses.cards.location.title": "École Avanchet-Jura",
     "courses.cards.location.desc": "Bi veguhestina giştî bi hêsanî tê gihîştin",
-    "courses.register": "Agahiyên bêtir",
-    "courses.register.desc": "Ji bo bêtir agahdarî li ser qursan an jî ji bo qeydkirina zarokên xwe, ji kerema xwe bi rêya e-nameyê an telefonê bi me re têkilî daynin. Her wiha hûn dikarin serdana malpera fermî ya hînkirina zimanê dayikê li Cinêvê (LCO) bikin.",
-    "courses.register.button": "Malpera LCO",
+    "courses.more": "Agahiyên bêtir",
+    "courses.more.desc": "Ji bo bêtir agahdarî li ser qursan, hûn dikarin serdana malpera fermî ya hînkirina zimanên dayikê li Cinêvê (LCO) bikin.",
+    "courses.more.button": "Malpera LCO",
+    "courses.enroll.title": "Tomarkirina Kursê",
+    "courses.enroll.desc": "Ji bo ku zarokên xwe di parastina ziman û çanda xwe ya dayikê de qeyd bikin, wan tevlî qursên zimanê Kurdî bikin. Ji bo qeydkirinê, ji kerema xwe forma qeydkirinê ya li jêr dakêşin, tije bikin û bi e-nameyê ji me re bişînin.",
+    "courses.enroll.button": "Forma qeydkirinê",
     
     // About
     "about.title": "Der barê ACKG",

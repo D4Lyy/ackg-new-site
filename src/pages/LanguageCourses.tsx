@@ -166,22 +166,37 @@ const LanguageCourses = () => {
           </Card>
         </div>
 
-        {/* CTA */}
+        {/* More info */}
         <Card className="bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10">
           <CardContent className="p-12 text-center">
             <h3 className="text-2xl font-bold mb-4">
-              {t("courses.register")}
+              {t("courses.enroll.title")}
             </h3>
             <p className="text-muted-foreground mb-6">
-              {t("courses.register.desc")}
+              {t("courses.enroll.desc")}
             </p>
             <Button size="lg" className="font-semibold" asChild>
               <Link to={`https://edu.ge.ch/enseignement/accueil-des-eleves-allophones/ressource/langues-et-cultures-dorigine-lco-3024`} target="_blank" rel="noopener noreferrer">
-                {t("courses.register.button")}
+                {t("courses.enroll.button")}
               </Link>
             </Button>
           </CardContent>
         </Card>
+
+        {/* CTA */}
+        <section className="container mx-auto px-4 py-10">
+          <h3 className="text-2xl font-bold mb-6">{t("courses.more")}</h3>
+          <p className="text-lg text-muted-foreground mb-6 whitespace-pre-line">
+            {t("courses.more.desc")}
+          </p>
+          {/* Centered button */}
+          <Button size="lg" className="font-semibold mx-auto" asChild>
+            <Link to={`/documents/Formulaire_inscription.docx`} target="_blank" rel="noopener noreferrer">
+              {t("courses.more.button")}
+            </Link>
+          </Button>
+        </section>
+
       </section>
     </div>
   );

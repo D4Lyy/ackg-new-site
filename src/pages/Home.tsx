@@ -91,7 +91,7 @@ const Home = () => {
                 {t("home.courses.desc")}
               </p>
               <Button size="lg" asChild>
-                <Link to={`/${currentLang}/cours-de-langues`}>{t("home.courses.button")}</Link>
+                <Link to={`/${currentLang}/language-courses`}>{t("home.courses.button")}</Link>
               </Button>
             </div>
             <div className="relative h-[400px] rounded-lg overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20">
@@ -116,7 +116,7 @@ const Home = () => {
               {t("home.support.desc")}
             </p>
             <Button size="lg" variant="default">
-              <Link to={`/become-member.pdf`} target="_blank" rel="noopener noreferrer">
+              <Link to={`/documents/become-member.pdf`} target="_blank" rel="noopener noreferrer">
                 {t("home.support.button")}
               </Link>
             </Button>
@@ -157,7 +157,7 @@ const Home = () => {
             {t("home.activities.desc")}
           </p>
           <Button variant="outline" asChild>
-            <Link to={`/${currentLang}/activites`}>{t("home.activities.viewAll")}</Link>
+            <Link to={`/${currentLang}/activities`}>{t("home.activities.viewAll")}</Link>
           </Button>
         </div>
         
