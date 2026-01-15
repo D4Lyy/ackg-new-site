@@ -176,7 +176,7 @@ const LanguageCourses = () => {
               {t("courses.enroll.desc")}
             </p>
             <Button size="lg" className="font-semibold" asChild>
-              <Link to={`https://edu.ge.ch/enseignement/accueil-des-eleves-allophones/ressource/langues-et-cultures-dorigine-lco-3024`} target="_blank" rel="noopener noreferrer">
+              <Link to={`/documents/Formulaire_inscription.docx`} target="_blank" rel="noopener noreferrer">
                 {t("courses.enroll.button")}
               </Link>
             </Button>
@@ -191,7 +191,7 @@ const LanguageCourses = () => {
           </p>
           {/* Centered button */}
           <Button size="lg" className="font-semibold mx-auto" asChild>
-            <Link to={`/documents/Formulaire_inscription.docx`} target="_blank" rel="noopener noreferrer">
+            <Link to={`https://edu.ge.ch/enseignement/accueil-des-eleves-allophones/ressource/langues-et-cultures-dorigine-lco-3024`} target="_blank" rel="noopener noreferrer">
               {t("courses.more.button")}
             </Link>
           </Button>
